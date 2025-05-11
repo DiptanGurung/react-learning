@@ -33,9 +33,9 @@ function App() {
     <>
       <h1>HamroLearn</h1>
       <div className='flex gap-8'>
-        <Button like={like} className='bg-red-300' onClick={handleLike} >Like</Button >
-        <Button like={share} className='bg-slate-400 w-[400px] text-white' onClick={handleShare}>Share</Button >
-        <Button like={dislike} className='bg-orange-400 w-[400px] text-white' onClick={handleDislike}>DisLike</Button >
+        <Button like={like} className={`bg-red-300 ${className}`} onClick={handleLike} >Like</Button >
+        <Button like={share} className={`bg-slate-400 w-[400px] text-white ${className}`} onClick={handleShare}>Share</Button >
+        <Button like={dislike} className={`bg-orange-400 w-[400px] text-white ${className}`} onClick={handleDislike}>DisLike</Button >
 
       </div>
     </>
