@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Card from './components/Card.jsx'
 import Button from './components/Button.jsx'
+import Input from './components/input.jsx'
 
 function App() {
 
@@ -36,6 +37,11 @@ function App() {
               })
           }
         </div>
+</div>
+
+<div>
+          <h1>Number DEMO</h1>
+  <Input />
 </div>
   
 </>

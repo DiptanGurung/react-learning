@@ -16,7 +16,7 @@ const handleLikeToggle = () => {
     }
   };
 
-   if (deleted) return null; 
+   if (deleted) return null;
 
   return (
 
