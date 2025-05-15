@@ -24,7 +24,7 @@ function Useeffect() {
   return (
     <>
       <div className='flex flex-col mt-20 text-2xl'>
-        <button onClick={() => setValue(prev => prev+1)} >1</button>
+        <button onClick={() => setValue(prev => prev+1)}>1</button>
         <button onClick={() => setCount(prev => prev+1)}>2</button>
         <button onClick={() => setValue(prev => prev+1)}>3</button>
       </div>
