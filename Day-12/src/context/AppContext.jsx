@@ -10,8 +10,12 @@ export const AppProvider = ({ children }) => {
     setResumes((prev) => [...prev, resume]);
   };
 
+  const deleteResume = (id) => {
+    setResumes((prevResumes) => prevResumes.filter((resume) => resume.id !== id));
+  };
+
   return (
-    <AppContext.Provider value={{ isModalOpen, setIsModalOpen, resumes, addResume }}>
+    <AppContext.Provider value={{ isModalOpen, setIsModalOpen, resumes, addResume, deleteResume }}>
       {children}
     </AppContext.Provider>
   );

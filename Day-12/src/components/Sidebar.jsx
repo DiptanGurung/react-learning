@@ -24,7 +24,6 @@ export default function Sidebar() {
         Create New Resume
       </button>
 
-      {/* Navigation Links */}
       <nav className="space-y-4 ml-3">
         <p className="flex items-center space-x-2 cursor-pointer hover:underline">
           <FileText className="w-5 h-5" />

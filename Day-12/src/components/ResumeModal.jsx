@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Upload, Info } from 'lucide-react';
+import { X, Upload, Info, Check } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 
 export default function ResumeModal() {
@@ -104,7 +104,7 @@ export default function ResumeModal() {
                   checked={targetResume}
                   onChange={() => setTargetResume(!targetResume)}
                 />
-                <div className="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:bg-blue-500 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full" />
+                <Check />
               </label>
             </div>
             <p className="text-xs text-green-400 flex items-start">

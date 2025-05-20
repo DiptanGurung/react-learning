@@ -1,0 +1,87 @@
+// import React from 'react'
+// import Header from'./components/Header'
+// import Map from './components/Map'
+// import Notstarted from './components/Notstarted'
+// import Complete from './components/Complete'
+// import Ongoing from './components/Ongoing'
+// import Block from './components/Block'
+// import Review from './components/Review'
+// import All from './components/All'
+// import { BrowserRouter,Routes,Route,Link } from 'react-router'
+
+// function App() {
+//   return (
+//     <>
+//    < Header/>
+//    <Map/>
+
+//    <Routes>
+//     <Route path='/' element={<All/>}>All</Route>
+//     <Route path='/notstarted' element={<Notstarted/>}>Notstarted</Route>
+//     <Route path='/complete' element={<Complete/>}>Complete</Route>
+//     <Route path='/ongoing' element={<Ongoing/>}>Ongoing</Route>
+//     <Route path='/block' element={<Block/>}>Block</Route>
+//     <Route path='/review' element={<Review/>}>Review</Route>
+//    </Routes>
+
+//     </>
+//   )
+// }
+
+// export default App
+
+import React, { useEffect, useState } from "react";
+
+function App() {
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // post , get , put
+
+  console.log("Data is: ", data);
+
+  const fetchData = () => {
+    setIsLoading(true);
+    fetch("https://jsonplaceholder.typicode.com/posts/1")
+      .then((value) => {
+        // console.log("value is: ", value);
+        return value.json();
+      })
+      .then((data) => {
+        // console.log("response json data is: ", data[0]);
+        setIsLoading(false);
+        setData(data);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        setError(error);
+        console.log("Error is  ", error);
+      });
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading.....</div>;
+  }
+
+  return (
+    <div className="h-screen w-full bg-slate-200">
+      {data &&
+        data.map((value,index) => {
+          return (
+            <div key={index}  className="h-fit w-fit bg-orange-100 my-2">
+              <h1>{value?.id}</h1>
+              <h1>{value?.title}</h1>
+              <h1>{value?.body}</h1>
+            </div>
+          );
+        })}
+    </div>
+  );
+}
+
+export default App;

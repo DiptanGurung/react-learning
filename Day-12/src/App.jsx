@@ -11,7 +11,7 @@ function App() {
 
   return (
     <Router>
-      <div className="flex h-screen bg-gradient-to-b from-blue-400 to-gray-400 text-white relative">
+      <div className="flex h-screen bg-gradient-to-t from-green-300 to-gray-300 text-white relative">
         <Sidebar />
 
         <div className="flex-1 p-6 overflow-y-auto">
