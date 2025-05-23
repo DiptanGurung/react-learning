@@ -1,46 +1,44 @@
-import { useAudio } from '../context/AudioContext';
-import { testTrack } from '../data/tracks';
-import { Playlists } from '../data/Playlists';
-import PlaylistCard from '../components/PlaylistCard';
-import PageWrapper from '../components/PageWrapper';
+import React, { useState } from "react";
+import Header from "../components/Header";
+import ProductCard from "../components/ProductCard";
+import products from "../data/products";
 
-function Home() {
-  const { dispatch } = useAudio();
+export default function Home() {
+  const [cart, setCart] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const handlePlay = () => {
-    dispatch({ type: 'SET_TRACK', payload: testTrack });
-    dispatch({ type: 'PLAY' });
+  const addToCart = (product) => {
+    // console.log("Adding to cart:", product);
+    const existingIndex = cart.findIndex(item => item.id === product.id);
+    let updatedCart;
+
+    if (existingIndex !== -1) {
+      updatedCart = [...cart];
+      updatedCart[existingIndex].quantity += 1;
+    } else {
+      updatedCart = [...cart, { ...product, quantity: 1 }];
+    }
+
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
+  const handleSearch = (term) => {
+    setSearchTerm(term.toLowerCase());
+  };
+
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm)
+  );
+
   return (
-    <PageWrapper>
-      <div>
-        <h1 className="text-5xl font-bold neon-text mb-6">Welcome to NEOSonic</h1>
-        <p className="text-zinc-400">Your ultimate cyberpunk music experience.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          <div className="bg-zinc-800 p-4 rounded-lg hover:bg-zinc-700 transition">
-            <img src={testTrack.cover} alt="cover" className="rounded mb-2" />
-            <h2 className="text-xl font-semibold">{testTrack.title}</h2>
-            <p className="text-sm text-zinc-400">{testTrack.artist}</p>
-            <button
-              onClick={handlePlay}
-              className="mt-2 bg-green-500 hover:bg-green-600 px-4 py-1 text-sm rounded"
-            >
-              ▶ Play
-            </button>
-          </div>
-        </div>
-        <div>
-          <h1 className="text-3xl font-bold mb-6">Featured Playlists</h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {Playlists.map((p) => (
-              <PlaylistCard key={p.id} playlist={p} />
-            ))}
-          </div>
-        </div>
-      </div>
-    </PageWrapper>
+    <div className="min-h-screen bg-gray-100">
+      <Header cartCount={cart.length} onSearch={handleSearch} />
+      <main className="p-4 flex flex-wrap gap-8 ml-5 mt-5">
+        {filteredProducts.map((product) => (
+          <ProductCard key={product.id} product={product} addToCart={addToCart} />
+        ))}
+      </main>
+    </div>
   );
 }
-
-export default Home;

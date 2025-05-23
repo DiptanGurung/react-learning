@@ -1,44 +1,49 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Sidebar from './components/Sidebar';
-import Player from './components/Player';
-import Home from './pages/Home';
-import Library from './pages/Library';
-import Search from './pages/Search';
-import Layout from './components/Layout';
-import Playlist from './pages/Playlist';
-import Playlists from './data/Playlists';
-import NowPlaying from './pages/NowPlaying';
-import { AudioProvider } from './context/AudioContext';
-import { AnimatePresence } from 'framer-motion';
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./pages/Home";
+import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/CheckoutPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import ProfilePage from "./pages/ProfilePage";
+import AdminPage from "./pages/AdminPage";
+import AdminHome from "./pages/AdminHome";
+import { AuthProvider, AuthContext } from "./context/AuthContext";
+import { useContext } from "react";
 
-function App() {
-  const location = useLocation();
-
-  return (
-    <AudioProvider>
-      <Layout>
-        <AnimatePresence mode="wait">
-          <div className="flex h-screen bg-zinc-900 text-white">
-            <Sidebar />
-            <div className="flex-1 flex flex-col">
-              <div className="flex-1 overflow-y-auto p-4">
-                <Routes location={location} key={location.pathname}>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/library" element={<Library />} />
-                  <Route path="/search" element={<Search />} />
-                  <Route path="/playlists" element={<Playlists />} />
-                  <Route path="/playlist/:id" element={<Playlist />} />
-                  <Route path="/now-playing" element={<NowPlaying />} />
-                </Routes>
-              </div>
-              <Player />
-            </div>
-          </div>
-        </AnimatePresence>
-      </Layout>
-    </AudioProvider>
-  );
+function HomeRedirect() {
+  const { user } = useContext(AuthContext);
+  if (user === undefined) return <Home />;
+  return user?.email === "admin@gmail.com" ? <AdminHome /> : <Home />;
 }
 
-export default App;
+function PrivateRoute({ children }) {
+  const { user } = useContext(AuthContext);
+  return user ? children : <Navigate to="/login" replace />;
+}
+
+function AdminRoute({ children }) {
+  const { user } = useContext(AuthContext);
+  return user && (user.email === "admin@gmail.com" || user.isAdmin)
+    ? children
+    : <Navigate to="/" replace />;
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomeRedirect />} />
+          <Route path="/home" element={<Navigate to="/" replace />} />
+          <Route path="/cart" element={<PrivateRoute><CartPage /></PrivateRoute>} />
+          <Route path="/checkout" element={<PrivateRoute><CheckoutPage /></PrivateRoute>} />
+          <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+          <Route path="/admin-home" element={<AdminRoute><AdminHome /></AdminRoute>} />
+          <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
+}
