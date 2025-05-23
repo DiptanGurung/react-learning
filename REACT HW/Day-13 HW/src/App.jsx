@@ -9,13 +9,13 @@ import AdminPage from "./pages/AdminPage";
 import AdminHome from "./pages/AdminHome";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import { useContext } from "react";
+import { ProductProvider } from "./context/ProductContext";
 
 function HomeRedirect() {
   const { user } = useContext(AuthContext);
-  if (user === undefined) return <Home />;
-  return user?.email === "admin@gmail.com" ? <AdminHome /> : <Home />;
+  if (!user) return <Home />;
+  return user.isAdmin || user.email === "admin@gmail.com" ? <Navigate to="/admin-home" replace /> : <Home />;
 }
-
 function PrivateRoute({ children }) {
   const { user } = useContext(AuthContext);
   return user ? children : <Navigate to="/login" replace />;
@@ -31,19 +31,21 @@ function AdminRoute({ children }) {
 export default function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<HomeRedirect />} />
-          <Route path="/home" element={<Navigate to="/" replace />} />
-          <Route path="/cart" element={<PrivateRoute><CartPage /></PrivateRoute>} />
-          <Route path="/checkout" element={<PrivateRoute><CheckoutPage /></PrivateRoute>} />
-          <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
-          <Route path="/admin-home" element={<AdminRoute><AdminHome /></AdminRoute>} />
-          <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+      <ProductProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<HomeRedirect />} />
+            <Route path="/home" element={<Navigate to="/" replace />} />
+            <Route path="/cart" element={<PrivateRoute><CartPage /></PrivateRoute>} />
+            <Route path="/checkout" element={<PrivateRoute><CheckoutPage /></PrivateRoute>} />
+            <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+            <Route path="/admin-home" element={<AdminHome />} />
+            <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+          </Routes>
+        </Router>
+      </ProductProvider>
+    </AuthProvider >
   );
 }

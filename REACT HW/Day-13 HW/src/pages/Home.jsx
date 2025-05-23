@@ -1,15 +1,19 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Header from "../components/Header";
 import ProductCard from "../components/ProductCard";
-import products from "../data/products";
+import { ProductContext } from "../context/ProductContext";
 
 export default function Home() {
-  const [cart, setCart] = useState([]);
+  const { products } = useContext(ProductContext);
+  const [cart, setCart] = useState(() => {
+    // Load saved cart from localStorage on initial render
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
   const [searchTerm, setSearchTerm] = useState("");
 
   const addToCart = (product) => {
-    // console.log("Adding to cart:", product);
-    const existingIndex = cart.findIndex(item => item.id === product.id);
+    const existingIndex = cart.findIndex((item) => item.id === product.id);
     let updatedCart;
 
     if (existingIndex !== -1) {
@@ -28,16 +32,20 @@ export default function Home() {
   };
 
   const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm)
+    product.title.toLowerCase().includes(searchTerm)
   );
 
   return (
     <div className="min-h-screen bg-gray-100">
       <Header cartCount={cart.length} onSearch={handleSearch} />
       <main className="p-4 flex flex-wrap gap-8 ml-5 mt-5">
-        {filteredProducts.map((product) => (
-          <ProductCard key={product.id} product={product} addToCart={addToCart} />
-        ))}
+        {filteredProducts.length === 0 ? (
+          <p className="text-gray-500">No products found.</p>
+        ) : (
+          filteredProducts.map((product) => (
+            <ProductCard key={product.id} product={product} addToCart={addToCart} />
+          ))
+        )}
       </main>
     </div>
   );

@@ -2,27 +2,31 @@ import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
+const ADMIN_EMAIL = "admin@gmail.com"; // ✅ define this constant here
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem("user"));
-    if (savedUser) setUser(savedUser);
+    if (savedUser) {
+      if (savedUser.email === ADMIN_EMAIL) {
+        savedUser.isAdmin = true; // Reinforce admin flag
+      }
+      setUser(savedUser);
+    }
   }, []);
 
   const login = (email, password) => {
-    // Hardcoded admin
-    if (email === "admin@gmail.com" && password === "admin123") {
-      const adminUser = { email: "admin@gmail.com", role: "admin" };
+    if (email === ADMIN_EMAIL && password === "admin123") {
+      const adminUser = { email: ADMIN_EMAIL, role: "admin", isAdmin: true };
       setUser(adminUser);
       localStorage.setItem("user", JSON.stringify(adminUser));
       return true;
     }
 
     const users = JSON.parse(localStorage.getItem("users")) || [];
-    const existingUser = users.find(
-      (u) => u.email === email && u.password === password
-    );
+    const existingUser = users.find((u) => u.email === email && u.password === password);
     if (existingUser) {
       setUser(existingUser);
       localStorage.setItem("user", JSON.stringify(existingUser));
@@ -32,13 +36,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = (email, password) => {
-    if (email === "admin@gmail.com") {
-      // prevent registering admin
-      return false;
-    }
+    if (email === ADMIN_EMAIL) return false; // Prevent admin email registration
 
     const users = JSON.parse(localStorage.getItem("users")) || [];
     if (users.some((u) => u.email === email)) return false;
+
     const newUser = { email, password };
     const updatedUsers = [...users, newUser];
     localStorage.setItem("users", JSON.stringify(updatedUsers));
@@ -53,7 +55,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isLoggedIn: !!user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

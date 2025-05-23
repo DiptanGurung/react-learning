@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function LoginPage() {
   const { login } = useContext(AuthContext);
@@ -11,42 +11,53 @@ export default function LoginPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (email === "admin@gmail.com" && password === "admin123") {
+      login(email, password);
+      navigate("/admin-home");
+      return;
+    }
+
     const success = login(email, password);
     if (success) {
-      if (email === "admin@gmail.com") {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
+      navigate("/");
     } else {
-      setError("Invalid credentials");
+      setError("Invalid email or password");
     }
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">Login</h2>
-      {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+
         <input
           type="email"
           placeholder="Email"
+          className="w-full border px-4 py-2 mb-4 rounded"
           value={email}
-          required
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full border px-4 py-2 rounded"
+          required
         />
+
         <input
           type="password"
           placeholder="Password"
+          className="w-full border px-4 py-2 mb-6 rounded"
           value={password}
-          required
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full border px-4 py-2 rounded"
+          required
         />
-        <button className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700">
+
+        <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
           Login
         </button>
+
+        <p className="mt-4 text-center">
+          New here? <Link to="/register" className="text-blue-600 underline">Register</Link>
+        </p>
       </form>
     </div>
   );

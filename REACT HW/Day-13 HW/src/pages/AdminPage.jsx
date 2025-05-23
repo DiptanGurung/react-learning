@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { ProductContext } from "../context/ProductContext";
 import { useNavigate, Link } from "react-router-dom";
 
 export default function AdminPage() {
   const { user, logout } = useContext(AuthContext);
+  const { products, addProduct, deleteProduct } = useContext(ProductContext);
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
   const [form, setForm] = useState({
     title: "",
     price: "",
@@ -20,11 +21,6 @@ export default function AdminPage() {
     }
   }, [user, navigate]);
 
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("products")) || [];
-    setProducts(stored);
-  }, []);
-
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -37,16 +33,12 @@ export default function AdminPage() {
       price: parseFloat(form.price),
       category: form.category.trim(),
     };
-    const updated = [...products, newProduct];
-    localStorage.setItem("products", JSON.stringify(updated));
-    setProducts(updated);
+    addProduct(newProduct); // Use context method
     setForm({ title: "", price: "", category: "" });
   };
 
   const handleDelete = (id) => {
-    const updated = products.filter((p) => p.id !== id);
-    localStorage.setItem("products", JSON.stringify(updated));
-    setProducts(updated);
+    deleteProduct(id); // Use context method
   };
 
   if (!user || user.email !== ADMIN_EMAIL) {
