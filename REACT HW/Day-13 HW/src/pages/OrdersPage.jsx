@@ -7,8 +7,12 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
+    if (!user?.email) return;
+
     const allOrders = JSON.parse(localStorage.getItem("orders")) || [];
-    const userOrders = allOrders.filter(order => order.email === user?.email);
+    console.log("All orders in storage:", allOrders);
+    const userOrders = allOrders.filter(order => order.email === user.email);
+    console.log(`Orders for user ${user.email}:`, userOrders);
     setOrders(userOrders);
   }, [user]);
 

@@ -7,7 +7,7 @@ import ProfilePage from "./pages/ProfilePage";
 import AdminPage from "./pages/AdminPage";
 import AdminHome from "./pages/AdminHome";
 import OrderHistoryPage from "./pages/OrderHistoryPage";
-// import OrdersPage from "./pages/OrdersPage";
+import OrdersPage from "./pages/OrdersPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import ThankYouPage from "./pages/ThankYouPage";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
@@ -46,7 +46,7 @@ export default function App() {
             <Route path="/admin-home" element={<AdminHome />} />
             <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
             <Route path="/orders" element={<OrderHistoryPage />} />
-            {/* <Route path="/orders-page" element={<OrdersPage />} /> */}
+            <Route path="/orders-page" element={<OrdersPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
           </Routes>

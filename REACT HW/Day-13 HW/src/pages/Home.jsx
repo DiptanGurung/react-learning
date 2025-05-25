@@ -6,7 +6,6 @@ import { ProductContext } from "../context/ProductContext";
 export default function Home() {
   const { products } = useContext(ProductContext);
   const [cart, setCart] = useState(() => {
-    // Load saved cart from localStorage on initial render
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
   });
@@ -27,6 +26,16 @@ export default function Home() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === "cart") {
+        setCart(e.newValue ? JSON.parse(e.newValue) : []);
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   const handleSearch = (term) => {
     setSearchTerm(term.toLowerCase());
   };
@@ -35,10 +44,12 @@ export default function Home() {
     product.title.toLowerCase().includes(searchTerm)
   );
 
+  const totalCartCount = cart.reduce((total, item) => total + item.quantity, 0);
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Header cartCount={cart.length} onSearch={handleSearch} />
-      <main className="p-4 flex flex-wrap gap-8 ml-5 mt-5">
+    <div className="min-h-screen bg-gradient-to-l from-purple-400 to-indigo-300">
+      <Header cartCount={totalCartCount} onSearch={handleSearch} />
+      <main className="p-4 flex flex-wrap gap-10 ml-20 mt-5">
         {filteredProducts.length === 0 ? (
           <p className="text-gray-500">No products found.</p>
         ) : (

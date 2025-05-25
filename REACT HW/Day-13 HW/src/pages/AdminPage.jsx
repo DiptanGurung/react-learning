@@ -35,12 +35,12 @@ export default function AdminPage() {
       category: form.category.trim(),
       image: form.image.trim(),
     };
-    addProduct(newProduct); // Use context method
+    addProduct(newProduct);
     setForm({ title: "", price: "", category: "" });
   };
 
   const handleDelete = (id) => {
-    deleteProduct(id); // Use context method
+    deleteProduct(id);
   };
 
   if (!user || user.email !== ADMIN_EMAIL) {

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 
 export default function CheckoutPage() {
-  
+
   const [cartItems, setCartItems] = useState([]);
   const [form, setForm] = useState({
     name: "",
@@ -38,11 +38,20 @@ export default function CheckoutPage() {
       id: Date.now(),
       items: cartItems,
       total,
-      date: new Date().toISOString(),
-      userEmail: form.email,
+      createdAt: new Date().toISOString(),
+      email: form.email,
     };
 
-    const orderHistory = JSON.parse(localStorage.getItem("orders")) || [];
+    let orderHistory = [];
+
+    try {
+      const stored = JSON.parse(localStorage.getItem("orders"));
+      if (Array.isArray(stored)) {
+        orderHistory = stored;
+      }
+    } catch (e) {
+      orderHistory = [];
+    }
     orderHistory.push(order);
     localStorage.setItem("orders", JSON.stringify(orderHistory));
 

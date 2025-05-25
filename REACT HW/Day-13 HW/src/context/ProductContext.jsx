@@ -5,7 +5,6 @@ export const ProductContext = createContext();
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
 
-  // Load products from localStorage initially
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("products")) || [];
     setProducts(stored);

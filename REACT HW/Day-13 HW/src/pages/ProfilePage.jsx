@@ -1,12 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LogOut } from "lucide-react";
+import ConfirmLogoutModal from "../components/ConfirmLogoutModal";
 
 export default function ProfilePage() {
   const { user, logout } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [activeTab, setActiveTab] = useState("All");
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +41,19 @@ export default function ProfilePage() {
       ? orders
       : orders.filter((order) => order.status === activeTab);
 
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    logout();
+    setShowLogoutModal(false);
+  };
+
+  const cancelLogout = () => {
+    setShowLogoutModal(false);
+  };
+
   const renderOrders = () => (
     filteredOrders.length === 0 ? (
       <p className="text-gray-500 mt-4">No {activeTab.toLowerCase()} orders.</p>
@@ -64,7 +79,7 @@ export default function ProfilePage() {
               <select
                 value={order.status}
                 onChange={(e) =>
-                  updateOrderStatus(orders.indexOf(order), e.target.value)
+                  updateOrderStatus(index, e.target.value)
                 }
                 className="border px-2 py-1 rounded"
               >
@@ -74,8 +89,8 @@ export default function ProfilePage() {
               </select>
 
               <button
-                onClick={() => deleteOrder(orders.indexOf(order))}
-                className="ml-4 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 self-start"
+                onClick={() => deleteOrder(index)}
+                className="ml-4 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
               >
                 Delete
               </button>
@@ -87,10 +102,10 @@ export default function ProfilePage() {
   );
 
   return (
-
     <div className="p-6 max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold mb-2">User Profile</h2>
       <p className="mb-4">Logged in as: <strong>{user.email}</strong></p>
+
       <div className="flex items-center space-x-4 mb-6">
         <button
           onClick={() => navigate("/")}
@@ -99,11 +114,12 @@ export default function ProfilePage() {
           <ArrowLeft className="w-5 h-5 mr-2" />
           Home
         </button>
+
         <button
-          onClick={logout}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          onClick={handleLogoutClick}
+          className="bg-green-500 text-white text-sm px-2 py-1 rounded hover:bg-blue-600"
         >
-          Logout
+          <LogOut className="inline-block w-4 h-4 mr-1" /> Logout
         </button>
       </div>
 
@@ -112,10 +128,11 @@ export default function ProfilePage() {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-t ${activeTab === tab
-              ? "bg-blue-600 text-white"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              }`}
+            className={`px-4 py-2 rounded-t ${
+              activeTab === tab
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
           >
             {tab}
           </button>
@@ -123,6 +140,12 @@ export default function ProfilePage() {
       </div>
 
       {renderOrders()}
+
+      <ConfirmLogoutModal
+        isOpen={showLogoutModal}
+        onConfirm={confirmLogout}
+        onCancel={cancelLogout}
+      />
     </div>
   );
 }

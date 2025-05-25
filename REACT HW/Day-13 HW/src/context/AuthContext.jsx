@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
-const ADMIN_EMAIL = "admin@gmail.com"; // ✅ define this constant here
+const ADMIN_EMAIL = "admin@gmail.com";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
     const savedUser = JSON.parse(localStorage.getItem("user"));
     if (savedUser) {
       if (savedUser.email === ADMIN_EMAIL) {
-        savedUser.isAdmin = true; // Reinforce admin flag
+        savedUser.isAdmin = true; 
       }
       setUser(savedUser);
     }
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = (email, password) => {
-    if (email === ADMIN_EMAIL) return false; // Prevent admin email registration
+    if (email === ADMIN_EMAIL) return false;
 
     const users = JSON.parse(localStorage.getItem("users")) || [];
     if (users.some((u) => u.email === email)) return false;
