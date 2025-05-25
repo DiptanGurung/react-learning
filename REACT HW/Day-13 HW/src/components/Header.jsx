@@ -16,6 +16,7 @@ export default function Header({ cartCount, onSearch }) {
   return (
     <header className="bg-white shadow p-4 flex justify-between items-center">
       <Link to="/" className="text-2xl font-bold text-blue-600">NEOMart</Link>
+
       <div className="flex items-center gap-4">
         <div className="relative">
           <input
@@ -38,12 +39,17 @@ export default function Header({ cartCount, onSearch }) {
         </Link>
 
         {user && (
-          <Link to="/profile" className="text-sm text-gray-700 hover:underline">
-            Profile
-          </Link>
+          <>
+            <Link to="/orders" className="text-sm text-blue-600 hover:underline">
+              My Orders
+            </Link>
+            <Link to="/profile" className="text-sm text-gray-700 hover:underline">
+              Profile
+            </Link>
+          </>
         )}
-        {user ? (
 
+        {user ? (
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-700">{user.email}</span>
             <button
@@ -57,7 +63,6 @@ export default function Header({ cartCount, onSearch }) {
           <Link to="/login" className="text-blue-600 hover:underline text-sm">
             Login
           </Link>
-
         )}
       </div>
     </header>

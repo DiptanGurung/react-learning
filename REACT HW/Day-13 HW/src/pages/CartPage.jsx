@@ -19,6 +19,14 @@ export default function CartPage() {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
+  const removeItem = (index) => {
+    const updated = cartItems.filter((_, i) => i !== index);
+    setCartItems(updated);
+    localStorage.setItem("cart", JSON.stringify(updated));
+  };
+
+  const totalQuantity = cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * (item.quantity || 1),
     0
@@ -26,11 +34,16 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Header cartCount={cartItems.length} />
+      <Header cartCount={totalQuantity} />
       <div className="p-6">
         <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
         {cartItems.length === 0 ? (
-          <p>Your cart is empty.</p>
+          <p className="text-gray-500 italic">
+            Your cart is empty.{" "}
+            <Link to="/" className="text-blue-600 underline">
+              Shop now
+            </Link>.
+          </p>
         ) : (
           <div>
             {cartItems.map((item, index) => (
@@ -39,10 +52,10 @@ export default function CartPage() {
                 className="bg-white p-4 mb-2 rounded shadow flex items-center justify-between"
               >
                 <div>
-                  <h3 className="font-semibold">{item.name}</h3>
+                  <h3 className="font-semibold">{item.title}</h3>
                   <p>${item.price.toFixed(2)}</p>
                 </div>
-                <div>
+                <div className="flex items-center gap-2">
                   <label className="mr-2">Qty:</label>
                   <input
                     type="number"
@@ -53,15 +66,21 @@ export default function CartPage() {
                     }
                     className="w-16 border rounded px-2 py-1 text-center"
                   />
+                  <button
+                    onClick={() => removeItem(index)}
+                    className="text-red-600 hover:text-red-800 font-semibold"
+                  >
+                    Remove
+                  </button>
                 </div>
               </div>
             ))}
-            <p className="mt-1 text-sm text-gray-700">
+            <p className="mt-4 text-lg font-medium text-gray-800">
               Total: ${total.toFixed(2)}
             </p>
             <Link
               to="/checkout"
-              className="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              className="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
             >
               Proceed to Checkout
             </Link>

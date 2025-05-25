@@ -11,6 +11,7 @@ export default function AdminPage() {
     title: "",
     price: "",
     category: "",
+    image: "",
   });
 
   const ADMIN_EMAIL = "admin@gmail.com";
@@ -32,6 +33,7 @@ export default function AdminPage() {
       title: form.title.trim(),
       price: parseFloat(form.price),
       category: form.category.trim(),
+      image: form.image.trim(),
     };
     addProduct(newProduct); // Use context method
     setForm({ title: "", price: "", category: "" });
@@ -72,6 +74,14 @@ export default function AdminPage() {
         onSubmit={handleAdd}
         className="bg-white p-6 rounded-lg shadow-md mb-10 space-y-5"
       >
+        <input
+          name="image"
+          value={form.image}
+          onChange={handleChange}
+          placeholder="Image URL"
+          className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
         <input
           name="title"
           value={form.title}
