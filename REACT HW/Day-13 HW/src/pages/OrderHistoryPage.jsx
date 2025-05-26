@@ -107,7 +107,7 @@ export default function OrderHistoryPage() {
 
                 <button
                   onClick={() => handleDeleteClick(order.id)}
-                  className="mt-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm"
+                  className="mt-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-green-500 text-sm"
                 >
                   Delete
                 </button>

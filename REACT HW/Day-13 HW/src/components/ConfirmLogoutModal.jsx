@@ -13,7 +13,7 @@ export default function ConfirmLogoutModal({ isOpen, onConfirm, onCancel }) {
             onClick={onConfirm}
             className="bg-red-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
-            Yes, Log out
+            Yes
           </button>
           <button
             onClick={onCancel}

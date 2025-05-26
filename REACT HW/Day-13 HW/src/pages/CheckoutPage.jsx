@@ -40,6 +40,7 @@ export default function CheckoutPage() {
       total,
       createdAt: new Date().toISOString(),
       email: form.email,
+      status: "Pending",
     };
 
     let orderHistory = [];
@@ -55,6 +56,8 @@ export default function CheckoutPage() {
     orderHistory.push(order);
     localStorage.setItem("orders", JSON.stringify(orderHistory));
 
+    localStorage.setItem("currentUserEmail", form.email);
+    
     localStorage.removeItem("cart");
     setCartItems([]);
     navigate("/thank-you");

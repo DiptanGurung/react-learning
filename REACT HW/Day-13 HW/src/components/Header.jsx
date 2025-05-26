@@ -36,7 +36,7 @@ export default function Header({ cartCount, onSearch }) {
 
   return (
     <>
-      <header className="bg-gradient-to-r from-blue-500 to-indigo-500 shadow p-4 flex justify-between items-center">
+      <header className="bg-black shadow p-4 flex justify-between items-center">
         <Link to="/" className="text-2xl font-bold text-white">NEOMart</Link>
 
         <div className="flex items-center gap-4 relative">
@@ -81,7 +81,7 @@ export default function Header({ cartCount, onSearch }) {
                     </div>
                     <Link
                       to="/profile"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      className="block px-4 py-2 text-white hover:bg-blue-500"
                       onClick={() => setDropdownOpen(false)}
                     >
                       Profile

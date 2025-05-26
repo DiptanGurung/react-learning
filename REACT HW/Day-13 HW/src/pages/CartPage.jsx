@@ -80,7 +80,7 @@ export default function CartPage() {
             </p>
             <Link
               to="/checkout"
-              className="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+              className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-green-500 transition"
             >
               Proceed to Checkout
             </Link>

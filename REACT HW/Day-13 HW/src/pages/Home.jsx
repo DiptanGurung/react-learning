@@ -47,7 +47,7 @@ export default function Home() {
   const totalCartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-l from-purple-400 to-indigo-300">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-500 to-green-500">
       <Header cartCount={totalCartCount} onSearch={handleSearch} />
       <main className="p-4 flex flex-wrap gap-10 ml-20 mt-5">
         {filteredProducts.length === 0 ? (
