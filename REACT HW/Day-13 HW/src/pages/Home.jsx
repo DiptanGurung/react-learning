@@ -2,6 +2,9 @@ import React, { useContext, useState, useEffect } from "react";
 import Header from "../components/Header";
 import ProductCard from "../components/ProductCard";
 import { ProductContext } from "../context/ProductContext";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 export default function Home() {
   const { products } = useContext(ProductContext);
@@ -10,6 +13,7 @@ export default function Home() {
     return savedCart ? JSON.parse(savedCart) : [];
   });
   const [searchTerm, setSearchTerm] = useState("");
+  const [banners, setBanners] = useState([]);
 
   const addToCart = (product) => {
     const existingIndex = cart.findIndex((item) => item.id === product.id);
@@ -36,6 +40,11 @@ export default function Home() {
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
+  useEffect(() => {
+    const storedBanners = JSON.parse(localStorage.getItem("banners")) || [];
+    setBanners(storedBanners);
+  }, []);
+
   const handleSearch = (term) => {
     setSearchTerm(term.toLowerCase());
   };
@@ -46,12 +55,43 @@ export default function Home() {
 
   const totalCartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
+  const sliderSettings = {
+    autoplay: true,
+    infinite: true,
+    speed: 400,
+    autoplaySpeed: 2000,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    dots: true,
+    arrows: false,
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-500 to-green-500">
+    <div className="min-h-screen bg-gradient-to-br from-black via-[#11172a] to-black text-[#0ff]">
       <Header cartCount={totalCartCount} onSearch={handleSearch} />
-      <main className="p-4 flex flex-wrap gap-10 ml-20 mt-5">
+
+      {banners.length > 0 && (
+        <div className="mx-auto max-w-4xl mt-6 mb-12 rounded-xl overflow-hidden border border-[#0ff] shadow-[0_0_20px_#0ff]">
+          <Slider {...sliderSettings}>
+            {banners.map((url, i) => (
+              <div
+                key={i}
+                className="relative w-full aspect-[21/9] bg-black overflow-hidden"
+              >
+                <img
+                  src={url}
+                  alt={`Banner ${i + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </Slider>
+        </div>
+      )}
+
+      <main className="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
         {filteredProducts.length === 0 ? (
-          <p className="text-gray-500">No products found.</p>
+          <p className="text-[#0ff] col-span-full text-center text-lg">No products found.</p>
         ) : (
           filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} addToCart={addToCart} />
