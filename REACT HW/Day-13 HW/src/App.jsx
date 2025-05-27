@@ -13,6 +13,8 @@ import OrderHistoryPage from "./pages/OrderHistoryPage";
 import OrdersPage from "./pages/OrdersPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import ThankYouPage from "./pages/ThankYouPage";
+import CategoriesPage from "./pages/CategoriesPage";
+import CategoryPage from "./pages/CategoryPage";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
 import { ProductProvider } from "./context/ProductContext";
 import "slick-carousel/slick/slick.css";
@@ -50,6 +52,8 @@ export default function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/thank-you" element={<ThankYouPage />} />
 
+            <Route path="/categories" element={<CategoriesPage />} />
+            <Route path="/category/:name" element={<CategoryPage />} />
             <Route path="/cart" element={<PrivateRoute><CartPage /></PrivateRoute>} />
             <Route path="/checkout" element={<PrivateRoute><CheckoutPage /></PrivateRoute>} />
             <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />

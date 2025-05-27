@@ -56,7 +56,7 @@ export default function AdminPage() {
           <Box className="w-8 h-8 text-cyan-300 mt-1" />
           <div>
             <h3 className="text-2xl text-cyan-300 font-bold mb-2">Product Management</h3>
-            <p className="text-gray-300">Create, update, and delete products from the store database.</p>
+            <p className="text-gray-300">Create, update, and delete products for the store.</p>
           </div>
         </div>
         <div
@@ -66,7 +66,7 @@ export default function AdminPage() {
           <Film className="w-8 h-8 text-pink-400 mt-1" />
           <div>
             <h3 className="text-2xl text-pink-400 font-bold mb-2">Banner Control</h3>
-            <p className="text-gray-300">Manage homepage banners and promotional visuals.</p>
+            <p className="text-gray-300">Manage homepage banners and events.</p>
           </div>
         </div>
       </div>

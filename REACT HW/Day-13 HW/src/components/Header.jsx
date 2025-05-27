@@ -8,6 +8,7 @@ export default function Header({ cartCount, onSearch }) {
   const [searchInput, setSearchInput] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [categories, setCategories] = useState([]);
   const { user, logout } = useContext(AuthContext);
 
   const dropdownRef = useRef(null);
@@ -30,11 +31,22 @@ export default function Header({ cartCount, onSearch }) {
   const cancelLogout = () => setShowLogoutModal(false);
 
   useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const response = await fetch("https://fakestoreapi.com/products/categories");
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
+      }
+    }
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
     function handleClickOutside(event) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownOpen(false);
       }
     }
@@ -116,6 +128,7 @@ export default function Header({ cartCount, onSearch }) {
                     <div className="px-4 py-2 text-sm text-gray-300 border-b border-cyan-700">
                       {user.name || user.email}
                     </div>
+
                     <Link
                       to="/profile"
                       className="block px-4 py-2 text-white hover:bg-cyan-600"
@@ -125,9 +138,19 @@ export default function Header({ cartCount, onSearch }) {
                     >
                       Profile
                     </Link>
+
+                    <div className="border-t border-cyan-700 px-4 py-2 text-sm text-gray-400">
+                      <Link
+                        to="/categories"
+                        className="text-sm text-white hover:text-cyan-400 transition"
+                      >
+                        Categories
+                      </Link>
+                    </div>
+
                     <button
                       onClick={handleLogoutClick}
-                      className="w-full text-left px-4 py-2 text-white bg-red-600 hover:bg-pink-600"
+                      className="w-full text-left px-4 py-2 text-white bg-red-600 hover:bg-blue-500"
                       role="menuitem"
                     >
                       <LogOut className="inline-block w-4 h-4 mr-2" /> Logout
