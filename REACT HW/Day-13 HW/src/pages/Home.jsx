@@ -89,15 +89,32 @@ export default function Home() {
         </div>
       )}
 
-      <main className="p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+      <main className="p-8 max-w-7xl mx-auto space-y-12">
         {filteredProducts.length === 0 ? (
-          <p className="text-[#0ff] col-span-full text-center text-lg">No products found.</p>
+          <p className="text-[#0ff] text-center text-lg">No products found.</p>
         ) : (
-          filteredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} addToCart={addToCart} />
+          Object.entries(
+            filteredProducts.reduce((acc, product) => {
+              const category = product.category || "Uncategorized";
+              if (!acc[category]) acc[category] = [];
+              acc[category].push(product);
+              return acc;
+            }, {})
+          ).map(([category, items]) => (
+            <section key={category}>
+              <h2 className="text-2xl font-bold text-cyan-300 mb-4 border-b border-cyan-500 pb-2">
+                {category}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {items.map((product) => (
+                  <ProductCard key={product.id} product={product} addToCart={addToCart} />
+                ))}
+              </div>
+            </section>
           ))
         )}
       </main>
+
     </div>
   );
 }
