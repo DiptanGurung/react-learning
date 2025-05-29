@@ -1,16 +1,17 @@
 import React, { useContext, useState } from 'react';
 import { UserContext } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
+import InputField from '../components/InputField';
 
 const Register = () => {
   const { login } = useContext(UserContext);
-  const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    login(password, name);
+    login(email, password);
     navigate('/');
   };
 
@@ -21,27 +22,23 @@ const Register = () => {
     >
       <h2 className="text-2xl font-bold mb-4">Register</h2>
 
-      <input
+      <InputField
         type="email"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        required
-        className="border p-2 w-full rounded"
       />
 
-      <input
-        type="text"
-        placeholder="password"
+      <InputField
+        type="password"
+        placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        required
-        className="border p-2 w-full rounded"
       />
 
       <button
         type="submit"
-        className="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-red-500"
       >
         Register
       </button>

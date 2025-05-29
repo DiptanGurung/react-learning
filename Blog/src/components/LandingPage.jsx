@@ -1,13 +1,40 @@
-import React from 'react'
+import React, { useContext } from 'react';
+import { UserContext } from '../context/UserContext';
+import { useAdmin } from '../context/AdminContext';
 
-const landingpage = () => {
+const LandingPage = () => {
+  const { user } = useContext(UserContext);
+  const { posts } = useAdmin();
+
   return (
-    <div className="w-full h-screen bg-black flex items-center justify-center">
-      <h1 className="text-white text-3xl font-semibold">
-        Landing Pages
-      </h1>
-    </div>
-  )
-}
+    <div className="w-full min-h-screen bg-gray-100 p-6">
+      <h1 className="text-3xl font-bold text-center mb-8">Landing Page</h1>
 
-export default landingpage
+      {!user ? (
+        <p className="text-center text-gray-600">Please log in to view user blogs.</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {posts.length > 0 ? (
+            posts.map((post, index) => (
+              <div key={index} className="bg-white shadow-md rounded p-4">
+                <h2 className="text-xl font-semibold">{post.title}</h2>
+                <p className="mt-2 text-gray-700">{post.description}</p>
+                {post.images && (
+                  <img
+                    src={post.images}
+                    alt={post.title}
+                    className="mt-2 w-full h-40 object-cover rounded"
+                  />
+                )}
+              </div>
+            ))
+          ) : (
+            <p className="col-span-full text-center text-gray-600">No blog posts yet.</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default LandingPage;
