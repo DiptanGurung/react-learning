@@ -3,11 +3,10 @@ import AdminNavBar from '../components/AdminNavbar';
 import CreatePost from '../components/CreatePost';
 
 const AdminPage = () => {
-  
+
   return (
-    <div className="max-w-2xl mx-auto border p-6 rounded space-y-4">
-      <div className="border p-2 rounded w-fit">Admin</div>
-      <AdminNavBar />
+    <div className="max-w-3xl mx-auto p-6 border rounded space-y-6">
+      <h1 className="text-2xl font-bold">Admin Dashboard</h1>
       <CreatePost />
     </div>
   );

@@ -8,8 +8,8 @@ const CreatePost = () => {
 
   const handleCreatePost = async () => {
     try {
-      await createPost();  
-      navigate('/admin-panel'); 
+      createPost();
+      navigate('/admin-panel');
     } catch (error) {
       console.error('Failed to create post:', error);
     }

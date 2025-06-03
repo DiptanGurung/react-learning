@@ -13,13 +13,21 @@ export const AdminProvider = ({ children }) => {
   };
 
   const createPost = () => {
-    console.log('Creating post:', post);
-    setPost({ title: '', description: '', images: '' });
+    if (!post.title || !post.description) {
+      alert("Please fill out all required fields.");
+      return;
+    }
+
     setPosts((prev) => [...prev, post]);
+    setPost({ title: '', description: '', images: '' });
+  };
+
+  const deletePost = (index) => {
+    setPosts((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
-    <AdminContext.Provider value={{ post, posts, updateField, createPost }}>
+    <AdminContext.Provider value={{ post, posts, updateField, createPost, deletePost }}>
       {children}
     </AdminContext.Provider>
   );
