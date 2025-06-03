@@ -21,7 +21,7 @@ export default function CategoryPage() {
     setFilteredProducts(filtered);
   }, [products, name]);
 
-  const addToCart = (product) => {
+  const addToCart = (product) => {  
     const exists = cart.find((item) => item.id === product.id);
     const updatedCart = exists
       ? cart.map((item) =>

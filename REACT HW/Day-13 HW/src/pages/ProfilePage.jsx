@@ -49,7 +49,7 @@ export default function ProfilePage() {
       profile.email
     );
 
-    alert("Profile updated locally. (Add backend call if needed)");
+    alert("Profile updated.");
   };
 
   return (
