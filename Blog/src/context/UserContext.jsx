@@ -34,7 +34,7 @@ export const UserProvider = ({ children }) => {
       setUser(data.user);
     } catch (error) {
       console.error('Auto-login error:', error.message);
-      logout(); 
+      logout();
     }
   };
 
@@ -58,8 +58,7 @@ export const UserProvider = ({ children }) => {
         throw new Error(errorData.message || 'Registration failed');
       }
 
-      const response = await res.json();
-      return response;
+      return await res.json();
     } catch (error) {
       console.error('Register error:', error.message);
       throw error;
@@ -94,8 +93,59 @@ export const UserProvider = ({ children }) => {
     localStorage.removeItem('token');
   };
 
+  const verifyOTP = async (otp) => {
+    const res = await fetch('https://blogsitebackend-topcollec.onrender.com/api/auth/verify-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify({ otp, email: 'diptangurung1234@gmail.com' }),
+    });
+
+    const contentType = res.headers.get('content-type');
+
+    if (!res.ok) {
+      const error = contentType?.includes('application/json')
+        ? await res.json()
+        : { message: `Error ${res.status}` };
+
+      throw new Error(error.message || 'OTP verification failed');
+    }
+
+    return await res.json();
+  };
+
+  const resendOTP = async () => {
+    const res = await fetch('https://blogsitebackend-topcollec.onrender.com/api/auth/resend-otp', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || 'Resend OTP failed');
+    }
+
+    const data = await res.json();
+    return data;
+  };
+
   return (
-    <UserContext.Provider value={{ user, register, login, logout, getAuthHeaders }}>
+    <UserContext.Provider
+      value={{
+        user,
+        register,
+        login,
+        logout,
+        getAuthHeaders,
+        verifyOTP,
+        // resendOTP,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

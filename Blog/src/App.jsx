@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, } from 'react-router-dom';
-
 import Navbar from "./components/Navbar";
 import AdminNavBar from "./components/AdminNavbar";
 import LandingPage from "./components/LandingPage";
@@ -9,7 +8,6 @@ import Register from './components/Register';
 import AdminPage from './components/AdminPage';
 import AdminPanel from './components/AdminPanel';
 import OTPVerification from './components/OTPVerification';
-
 import { UserProvider, UserContext } from './context/UserContext';
 import { AdminProvider } from './context/AdminContext';
 
