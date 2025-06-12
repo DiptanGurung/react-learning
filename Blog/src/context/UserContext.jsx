@@ -100,7 +100,7 @@ export const UserProvider = ({ children }) => {
         'Content-Type': 'application/json',
         ...getAuthHeaders(),
       },
-      body: JSON.stringify({ otp, email: 'diptangurung1234@gmail.com' }),
+      body: JSON.stringify({ otp, email: 'diptangurung123@gmail.com' }),
     });
 
     const contentType = res.headers.get('content-type');
@@ -143,7 +143,7 @@ export const UserProvider = ({ children }) => {
         logout,
         getAuthHeaders,
         verifyOTP,
-        // resendOTP,
+        resendOTP,
       }}
     >
       {children}

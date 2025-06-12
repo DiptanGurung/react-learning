@@ -7,6 +7,7 @@ import LogIn from './components/LogIn';
 import Register from './components/Register';
 import AdminPage from './components/AdminPage';
 import AdminPanel from './components/AdminPanel';
+import ChangePassword from './components/ChangePassword';
 import OTPVerification from './components/OTPVerification';
 import { UserProvider, UserContext } from './context/UserContext';
 import { AdminProvider } from './context/AdminContext';
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="/verify-otp" element={<OTPVerification />} />
             <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
             <Route path="/admin-panel" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
+            <Route path="/change-password" element={<ChangePassword />} />
           </Route>
         </Routes>
       </Router>
