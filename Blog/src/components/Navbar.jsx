@@ -26,7 +26,7 @@ const Navbar = () => {
       <div className="space-x-4 relative">
         {user ? (
           <>
-            <span>Welcome, {user.name} ({user.role})</span>
+            <span>Welcome, {user.email}</span>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="bg-gray-200 px-3 py-1 rounded hover:bg-gray-300"

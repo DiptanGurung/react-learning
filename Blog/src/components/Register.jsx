@@ -1,9 +1,12 @@
 import React, { useContext, useState } from 'react';
 import { UserContext } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 
 const Register = () => {
   const { register } = useContext(UserContext);
+  const [showPassword, setShowPassword] = useState(false);
+
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -33,8 +36,8 @@ const Register = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-10 p-6 border rounded space-y-4 shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Register</h2>
+    <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-10 p-6 border rounded space-y-4 bg-indigo-500 shadow-md">
+      <h2 className="text-2xl font-bold mb-4 flex justify-center">REGISTER</h2>
 
       <input
         type="text"
@@ -56,15 +59,24 @@ const Register = () => {
         required
       />
 
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        value={formData.password}
-        onChange={handleChange}
-        className="w-full p-2 border rounded"
-        required
-      />
+      <div className="relative">
+        <input
+          type={showPassword ? 'text' : 'password'}
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          className="w-full p-2 border rounded pr-10"
+          required
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-3 top-2.5 text-gray-600"
+        >
+          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+        </button>
+      </div>
 
       <div>
         <label className="block mb-1">Profile Image</label>
@@ -79,7 +91,7 @@ const Register = () => {
 
       <button
         type="submit"
-        className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-red-500"
+        className="w-full bg-pink-500 text-white px-4 py-2 rounded hover:bg-red-500"
       >
         Register
       </button>
