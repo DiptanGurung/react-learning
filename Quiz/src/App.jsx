@@ -1,21 +1,16 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import Quiz from "./pages/Quiz";
-import Result from "./pages/Result";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { BrowserRouter } from "react-router-dom";
 import { QuizProvider } from "./context/QuizContext";
-
 import "./index.css";
 
-export default function App() {
-  return (
-    <QuizProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/quiz" element={<Quiz />} />
-          <Route path="/result" element={<Result />} />
-        </Routes>
-      </Router>
-    </QuizProvider>
-  );
-}
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <QuizProvider>
+        <App />
+      </QuizProvider>
+    </BrowserRouter>
+  </React.StrictMode>
+);
