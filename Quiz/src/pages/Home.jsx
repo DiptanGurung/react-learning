@@ -16,7 +16,7 @@ export default function Home() {
   const { setCategory, resetQuiz } = useQuiz();
 
   const handleSelect = (cat) => {
-    resetQuiz(); // in case user restarts
+    resetQuiz();
     setCategory(cat);
     navigate("/quiz");
   };
@@ -35,11 +35,11 @@ export default function Home() {
         {categories.map((cat, idx) => (
           <motion.button
             key={cat.id}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 0.90 }}
+            whileTap={{ scale: 0.85 }}
             onClick={() => handleSelect(cat.id)}
             className="bg-white text-purple-600 font-semibold rounded-2xl shadow-xl p-6 flex flex-col items-center gap-2 transition hover:bg-purple-100"
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: idx * 0.1 }}
           >
