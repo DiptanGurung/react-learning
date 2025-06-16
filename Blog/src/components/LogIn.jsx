@@ -30,7 +30,7 @@ const Login = () => {
         onSubmit={handleSubmit}
         className="max-w-md mx-auto mt-10 p-6 border rounded space-y-4 bg-indigo-500 shadow-md"
       >
-        <h2 className="text-xl font-bold flex justify-center">LOGIN</h2>
+        <h2 className="text-xl font-bold flex justify-center text-white">LOGIN</h2>
 
         <input
           type="email"

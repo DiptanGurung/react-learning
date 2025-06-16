@@ -74,12 +74,12 @@ const ChangePassword = () => {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 rounded-lg bg-indigo-500 shadow-md">
-      <h2 className="text-xl font-semibold mb-4 flex justify-center">Change Password</h2>
+      <h2 className="text-xl font-semibold mb-4 flex justify-center text-white">Change Password</h2>
 
       {error && <p className="text-red-600 mb-2">{error}</p>}
       {success && <p className="text-green-600 mb-2">{success}</p>}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 text-white">
         {renderPasswordInput('Old Password', oldPassword, setOldPassword, showOld, setShowOld)}
         {renderPasswordInput('New Password', newPassword, setNewPassword, showNew, setShowNew)}
         {renderPasswordInput('Retype New Password', confirmPassword, setConfirmPassword, showConfirm, setShowConfirm)}
