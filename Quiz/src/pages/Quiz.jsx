@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuiz } from "../context/QuizContext";
 import questionsData from "../data/questions";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, Volume2, VolumeX } from "lucide-react";
+import { Clock, Volume2, VolumeX, ThumbsUp, ThumbsDown } from "lucide-react";
 
 export default function Quiz() {
   const {
@@ -17,8 +17,11 @@ export default function Quiz() {
     musicOn,
     setMusicOn,
   } = useQuiz();
+
   const [selected, setSelected] = useState(null);
   const [timeLeft, setTimeLeft] = useState(10);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupContent, setPopupContent] = useState({ correct: false, option: "" });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,7 +39,7 @@ export default function Quiz() {
     return () => clearTimeout(timer);
   }, [timeLeft]);
 
-    useEffect(() => {
+  useEffect(() => {
     const audio = document.getElementById("bg-music");
     if (!audio) return;
 
@@ -72,9 +75,15 @@ export default function Quiz() {
 
   const handleAnswer = (option) => {
     if (selected) return;
+    const correct = option === questions[currentIndex].answer;
     setSelected(option);
-    if (option === questions[currentIndex].answer) setScore(score + 1);
-    setTimeout(() => handleNext(), 1000);
+    setPopupContent({ correct, option });
+    setShowPopup(true);
+    if (correct) setScore(score + 1);
+    setTimeout(() => {
+      setShowPopup(false);
+      handleNext();
+    }, 1200);
   };
 
   const handleNext = () => {
@@ -138,10 +147,12 @@ export default function Quiz() {
                 key={opt}
                 onClick={() => handleAnswer(opt)}
                 className={`w-full px-6 py-4 rounded-xl text-lg font-semibold transition shadow-lg focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-white/50 transform hover:scale-[1.02] ${
-                  selected === opt
+                  selected
                     ? opt === q.answer
                       ? "bg-green-500 text-white"
-                      : "bg-red-500 text-white"
+                      : selected === opt
+                      ? "bg-red-500 text-white"
+                      : "bg-white text-black opacity-50"
                     : "bg-white text-black hover:bg-gray-200"
                 }`}
               >
@@ -150,6 +161,24 @@ export default function Quiz() {
             ))}
           </div>
         </motion.div>
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showPopup && (
+          <motion.div
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            transition={{ duration: 0.3 }}
+            className="absolute top-1/4 bg-white text-black px-6 py-4 rounded-xl shadow-xl text-xl font-semibold flex items-center gap-3"
+          >
+            {popupContent.correct ? (
+              <><ThumbsUp className="text-green-600 w-6 h-6" /> Correct!</>
+            ) : (
+              <><ThumbsDown className="text-red-600 w-6 h-6" /> Incorrect</>
+            )}
+          </motion.div>
+        )}
       </AnimatePresence>
     </div>
   );
