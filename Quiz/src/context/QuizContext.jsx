@@ -7,6 +7,7 @@ export const QuizProvider = ({ children }) => {
   const [questions, setQuestions] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
+  const [musicOn, setMusicOn] = useState(true);
 
   const resetQuiz = () => {
     setQuestions([]);
@@ -26,6 +27,8 @@ export const QuizProvider = ({ children }) => {
         score,
         setScore,
         resetQuiz,
+        musicOn,
+        setMusicOn,
       }}
     >
       {children}
