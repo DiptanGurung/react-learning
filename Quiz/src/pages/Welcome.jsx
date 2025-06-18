@@ -1,60 +1,236 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Rocket } from "lucide-react";
-import { useState } from "react";
+
+function NeonLoader() {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-800 to-pink-700 text-white px-6">
+      <motion.div
+        className="relative w-24 h-24"
+        animate={{ rotate: 360 }}
+        transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+      >
+        <motion.div
+          className="absolute inset-0 rounded-full border-4 border-pink-400 opacity-70 shadow-[0_0_20px_5px_rgb(236,72,153)]"
+          animate={{ scale: [1, 1.15, 1] }}
+          transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute inset-4 rounded-full border-2 border-purple-400 opacity-80 shadow-[0_0_15px_3px_rgb(139,92,246)]"
+          animate={{ scale: [1, 0.85, 1] }}
+          transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute inset-8 rounded-full bg-pink-600 shadow-[0_0_15px_6px_rgb(236,72,153)]"
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ repeat: Infinity, duration: 1, ease: "easeInOut" }}
+        />
+      </motion.div>
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8, repeat: Infinity, repeatType: "reverse", duration: 1.5 }}
+        className="mt-8 text-2xl font-extrabold tracking-widest text-pink-400 drop-shadow-lg"
+      >
+        LOADING...
+      </motion.p>
+    </div>
+  );
+}
 
 export default function Welcome() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [musicOn, setMusicOn] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const audio = document.getElementById("welcome-music");
+    if (!audio) return;
+
+    if (musicOn) {
+      audio.volume = 0;
+      audio.play();
+      let vol = 0;
+      const fadeIn = setInterval(() => {
+        if (vol < 1) {
+          vol += 0.05;
+          audio.volume = vol;
+        } else clearInterval(fadeIn);
+      }, 100);
+    } else {
+      audio.pause();
+    }
+  }, [musicOn]);
 
   const handleEnter = () => {
-    setLoading(true);
+    setIsLoading(true);
+
+    const audio = document.getElementById("welcome-music");
+    if (audio) {
+      let vol = audio.volume;
+      const fadeOut = setInterval(() => {
+        if (vol > 0) {
+          vol -= 0.05;
+          audio.volume = Math.max(vol, 0);
+        } else {
+          clearInterval(fadeOut);
+          audio.pause();
+        }
+      }, 50);
+    }
+
     setTimeout(() => {
       navigate("/home");
-    }, 2000); // 2 seconds delay
+    }, 1800);
   };
+
+  if (isLoading) return <NeonLoader />;
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-800 to-purple-900 text-white p-6"
+      exit={{ opacity: 0 }}
+      className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-indigo-900 via-purple-800 to-pink-700 text-white px-6"
     >
-      {loading ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex flex-col items-center"
-        >
-          <Rocket className="w-16 h-16 animate-bounce text-yellow-400 mb-4" />
-          <p className="text-xl font-medium mb-2">Preparing your quiz...</p>
-          <div className="flex space-x-2">
-            <div className="w-4 h-4 bg-yellow-400 rounded-full animate-bounce [animation-delay:0ms]"></div>
-            <div className="w-4 h-4 bg-yellow-400 rounded-full animate-bounce [animation-delay:150ms]"></div>
-            <div className="w-4 h-4 bg-yellow-400 rounded-full animate-bounce [animation-delay:300ms]"></div>
-          </div>
-        </motion.div>
-      ) : (
-        <motion.div
-          initial={{ y: -30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="text-center"
-        >
-          <Rocket className="w-16 h-16 mx-auto text-yellow-400 mb-4" />
-          <h1 className="text-5xl font-bold mb-4">Welcome to Quiz Galaxy!</h1>
-          <p className="text-lg text-purple-100 mb-10">
-            Test your brain power across fun and challenging categories.
-          </p>
-          <button
-            onClick={handleEnter}
-            className="bg-yellow-400 text-black px-8 py-3 rounded-full text-lg font-bold shadow-lg hover:bg-yellow-300 transition"
+      <audio id="welcome-music" loop autoPlay hidden>
+        <source src="/sounds/enter.mp3" type="audio/mp3" />
+      </audio>
+
+      <motion.h1
+        initial={{ y: -30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        className="text-5xl md:text-6xl font-extrabold mb-4 select-none tracking-widest drop-shadow-lg"
+      >
+        Welcome to QuizMaster!
+      </motion.h1>
+
+      <motion.p
+        className="text-pink-300 text-lg italic mb-8 select-none"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.8 }}
+      >
+        Ready to test your knowledge? Answer 10 challenging questions and beat your high score!
+      </motion.p>
+
+      {/* Quiz features */}
+      <motion.div
+        className="flex space-x-8 text-pink-400 mb-10"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1, duration: 0.8 }}
+        aria-label="Quiz features"
+      >
+        {/* Question icon */}
+        <div className="flex flex-col items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-10 w-10"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
           >
-            Enter the Game
-          </button>
-        </motion.div>
-      )}
+            <path d="M12 18h.01" />
+            <path d="M12 12a3 3 0 0 0-3 3h6a3 3 0 0 0-3-3z" />
+            <path d="M12 6a4 4 0 0 0-4 4v1h8v-1a4 4 0 0 0-4-4z" />
+          </svg>
+          <span className="mt-1 text-sm">10 Questions</span>
+        </div>
+
+        {/* Timer icon */}
+        <div className="flex flex-col items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-10 w-10"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          <span className="mt-1 text-sm">Timed Quiz</span>
+        </div>
+
+        {/* Score icon */}
+        <div className="flex flex-col items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-10 w-10"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path d="M12 20l9-5-9-5-9 5 9 5z" />
+            <path d="M12 12v8" />
+            <path d="M21 7v6" />
+            <path d="M3 7v6" />
+          </svg>
+          <span className="mt-1 text-sm">High Score</span>
+        </div>
+      </motion.div>
+
+      <motion.button
+        onClick={handleEnter}
+        whileHover={{ scale: 1.05, textShadow: "0 0 8px #ff77ff" }}
+        whileTap={{ scale: 0.95 }}
+        className="bg-white hover:bg-blue-400 text-black font-bold px-14 py-4 rounded-full shadow-lg transition duration-300"
+        aria-label="Enter Quiz Game"
+      >
+        Start Quiz
+      </motion.button>
+
+      <button
+        onClick={() => setMusicOn(!musicOn)}
+        className="absolute top-6 right-6 p-3 rounded-full bg-white/30 hover:bg-white/50 text-black shadow-lg"
+        aria-label={musicOn ? "Mute music" : "Play music"}
+        title={musicOn ? "Mute music" : "Play music"}
+      >
+        {musicOn ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <path d="M15 12a3 3 0 0 1-3 3v-6a3 3 0 0 1 3 3z" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            <path d="M15 12a6 6 0 0 0 0-8.49" />
+          </svg>
+        ) : (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            viewBox="0 0 24 24"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        )}
+      </button>
     </motion.div>
   );
 }
-  

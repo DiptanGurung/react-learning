@@ -31,17 +31,21 @@ export default function Home() {
     if (musicOn) {
       audio.volume = 0;
       audio.play();
+      let vol = 0; // Use a local variable to track volume
       const fadeIn = setInterval(() => {
-        if (audio.volume < 1) {
-          audio.volume = Math.min(audio.volume + 0.1, 1);
+        if (vol < 1) {
+          vol = Math.min(vol + 0.1, 1);
+          audio.volume = vol;
         } else {
           clearInterval(fadeIn);
         }
       }, 100);
     } else {
+      let vol = audio.volume; // Start from current volume
       const fadeOut = setInterval(() => {
-        if (audio.volume > 0.1) {
-          audio.volume = Math.max(audio.volume - 0.1, 0);
+        if (vol > 0.1) {
+          vol = Math.max(vol - 0.1, 0);
+          audio.volume = vol;
         } else {
           audio.pause();
           clearInterval(fadeOut);
