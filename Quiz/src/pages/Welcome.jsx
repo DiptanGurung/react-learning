@@ -112,7 +112,7 @@ export default function Welcome() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5, duration: 0.8 }}
       >
-        Ready to test your knowledge? Answer 10 challenging questions and beat your high score!
+        Ready to test your knowledge? Answer challenging questions and beat your high score!
       </motion.p>
 
       {/* Quiz features */}
@@ -140,7 +140,7 @@ export default function Welcome() {
             <path d="M12 12a3 3 0 0 0-3 3h6a3 3 0 0 0-3-3z" />
             <path d="M12 6a4 4 0 0 0-4 4v1h8v-1a4 4 0 0 0-4-4z" />
           </svg>
-          <span className="mt-1 text-sm">10 Questions</span>
+          <span className="mt-1 text-sm">Different Category</span>
         </div>
 
         {/* Timer icon */}
@@ -193,44 +193,6 @@ export default function Welcome() {
       >
         Start Quiz
       </motion.button>
-
-      <button
-        onClick={() => setMusicOn(!musicOn)}
-        className="absolute top-6 right-6 p-3 rounded-full bg-white/30 hover:bg-white/50 text-black shadow-lg"
-        aria-label={musicOn ? "Mute music" : "Play music"}
-        title={musicOn ? "Mute music" : "Play music"}
-      >
-        {musicOn ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            viewBox="0 0 24 24"
-          >
-            <path d="M15 12a3 3 0 0 1-3 3v-6a3 3 0 0 1 3 3z" />
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-            <path d="M15 12a6 6 0 0 0 0-8.49" />
-          </svg>
-        ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            viewBox="0 0 24 24"
-          >
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        )}
-      </button>
     </motion.div>
   );
 }

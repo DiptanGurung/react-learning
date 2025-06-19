@@ -1,33 +1,23 @@
 import { useNavigate } from "react-router-dom";
 import { useQuiz } from "../context/QuizContext";
-import { motion } from "framer-motion";
-import {
-  Trophy,
-  RefreshCcw,
-  PartyPopper,
-  Target,
-  Rocket,
-  Meh,
-  Smile,
-  Brain,
-  Medal,
-  Volume2,
-  VolumeX,
-} from "lucide-react";
-import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWhatsapp, faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
 import confetti from "canvas-confetti";
 
+// Add Font Awesome icons to the library
+library.add(faWhatsapp, faTwitter);
+
 export default function Result() {
-  const {
-    score,
-    questions,
-    resetQuiz,
-    musicOn,
-    setMusicOn,
-  } = useQuiz();
+  const { score, questions, resetQuiz, musicOn, setMusicOn } = useQuiz();
   const navigate = useNavigate();
   const [highScore, setHighScore] = useState(0);
+  const [shareOpen, setShareOpen] = useState(false);
+  const shareRef = useRef(null);
 
+  // Save/load high score on mount and score changes
   useEffect(() => {
     const stored = Number(localStorage.getItem("highScore")) || 0;
     if (score > stored) {
@@ -37,7 +27,8 @@ export default function Result() {
       setHighScore(stored);
     }
 
-    if (score === questions.length) {
+    // Confetti on perfect score
+    if (score === questions.length && questions.length > 0) {
       confetti({
         particleCount: 200,
         spread: 100,
@@ -46,8 +37,20 @@ export default function Result() {
         colors: ["#facc15", "#4ade80", "#60a5fa"],
       });
     }
-  }, [score]);
+  }, [score, questions.length]);
 
+  // Close share popup if clicked outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (shareRef.current && !shareRef.current.contains(event.target)) {
+        setShareOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Determine background music based on score
   const getMusicSrc = () => {
     if (score === questions.length) return "/sounds/pixel-paradise.mp3";
     if (score >= questions.length * 0.8) return "/sounds/pixel.mp3";
@@ -55,6 +58,7 @@ export default function Result() {
     return "/sounds/bad-dreams.mp3";
   };
 
+  // Handle music volume fade in/out
   useEffect(() => {
     const audio = document.getElementById("bg-music");
     if (!audio) return;
@@ -99,42 +103,34 @@ export default function Result() {
       animate={{ scale: [1, 1.2, 1] }}
       transition={{ repeat: Infinity, duration: 1.5 }}
     >
-      {score === questions.length ? (
-        <span className="text-3xl">🎉</span>
-      ) : score > questions.length / 5 ? (
-        <span className="text-3xl">😊</span>
-      ) : (
-        <span className="text-3xl">😐</span>
-      )}
+      {score === questions.length
+        ? "🎉"
+        : score > questions.length / 5
+        ? "😊"
+        : "😐"}
     </motion.div>
   );
 
   let message;
   if (score === questions.length) {
-    message = (
-      <>
-        Perfect! You're a quiz master! <span className="ml-1">🎯</span>
-      </>
-    );
+    message = <>Perfect! You're a quiz master! 🎯</>;
   } else if (score > questions.length / 4) {
-    message = (
-      <>
-        Great job! Keep it up! <span className="ml-1">🚀</span>
-      </>
-    );
+    message = <>Great job! Keep it up! 🚀</>;
   } else if (score > 3) {
-    message = (
-      <>
-        Not bad, try again and improve! <span className="ml-1">🔄</span>
-      </>
-    );
+    message = <>Not bad, try again and improve! 🔄</>;
   } else {
-    message = (
-      <>
-        You don't have brains to work! <span className="ml-1">🧠</span>
-      </>
-    );
+    message = <>You don't have brains to work! 🧠</>;
   }
+
+  const shareText = encodeURIComponent(
+    `I scored ${score} out of ${questions.length} on this awesome quiz!`
+  );
+
+  // Animation variants for share popup
+  const popupVariants = {
+    hidden: { opacity: 0, y: -10 },
+    visible: { opacity: 1, y: 0 },
+  };
 
   return (
     <motion.div
@@ -144,13 +140,13 @@ export default function Result() {
       transition={{ duration: 0.4 }}
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-600 via-blue-500 to-indigo-600 text-white text-center px-4 py-10 relative"
     >
+      {/* Music Toggle */}
       <button
         onClick={() => setMusicOn(!musicOn)}
         className="absolute top-4 right-4 p-2 bg-white text-black rounded-full shadow"
         aria-label={musicOn ? "Mute background music" : "Play background music"}
-        title={musicOn ? "Mute background music" : "Play background music"}
       >
-        {musicOn ? <span>🔊</span> : <span>🔇</span>}
+        {musicOn ? "🔊" : "🔇"}
       </button>
 
       {musicOn && (
@@ -159,6 +155,7 @@ export default function Result() {
         </audio>
       )}
 
+      {/* Score Card */}
       <div className="bg-white/10 p-8 rounded-2xl backdrop-blur-lg shadow-xl max-w-xl w-full">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 flex items-center justify-center gap-3">
           🏆 {emoji} Score: {score}/{questions.length}
@@ -166,9 +163,7 @@ export default function Result() {
 
         <p className="text-xl mt-4">{message}</p>
 
-        <p className="text-md mt-6">
-          🥇 High Score: {highScore}
-        </p>
+        <p className="text-md mt-6">🥇 High Score: {highScore}</p>
 
         <div className="w-full mt-6 bg-white/30 h-4 rounded-full overflow-hidden">
           <div
@@ -176,13 +171,17 @@ export default function Result() {
             style={{ width: `${(score / questions.length) * 100}%` }}
           />
         </div>
-        <p className="text-sm mt-1">XP: {score * 10} XP</p>
 
+        <p className="text-sm mt-1">XP: {score * 10} XP</p>
         <p className="text-sm mt-1">
-          🔥 Streak: {score >= 3 ? `${score} correct in a row!` : `No streak`}
+          🔥 Streak: {score >= 3 ? `${score} correct in a row!` : "No streak"}
         </p>
 
-        <div className="mt-6 flex flex-col md:flex-row items-center justify-center gap-4">
+        {/* Action Buttons */}
+        <div
+          className="mt-6 flex flex-col md:flex-row items-center justify-center gap-4 relative"
+          ref={shareRef}
+        >
           <button
             onClick={handleRestart}
             className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-xl shadow hover:scale-105 transition flex items-center gap-2"
@@ -190,23 +189,51 @@ export default function Result() {
             🔄 Try Again
           </button>
 
-          <a
-            href={`https://wa.me/?text=I%20scored%20${score}%20out%20of%20${questions.length}%20on%20the%20Ultimate%20Quiz!`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-6 py-3 bg-green-500 text-white rounded-xl shadow hover:scale-105 transition"
+          <button
+            onClick={() => setShareOpen(!shareOpen)}
+            aria-haspopup="true"
+            aria-expanded={shareOpen}
+            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow hover:scale-105 transition flex items-center gap-2 relative"
           >
-            📤 Share on WhatsApp
-          </a>
+            🔗 Share {shareOpen ? "▲" : "▼"}
+          </button>
 
-          <a
-            href={`https://twitter.com/intent/tweet?text=I%20scored%20${score}%20out%20of%20${questions.length}%20on%20this%20awesome%20quiz!`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-6 py-3 bg-blue-500 text-white rounded-xl shadow hover:scale-105 transition"
-          >
-            🐦 Share on X
-          </a>
+          <AnimatePresence>
+            {shareOpen && (
+              <motion.div
+                key="share-popup"
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                variants={popupVariants}
+                transition={{ duration: 0.3 }}
+                className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg text-black py-2 w-48 z-50"
+              >
+                <button
+                  onClick={() =>
+                    window.open(`https://wa.me/?text=${shareText}`, "_blank")
+                  }
+                  className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full text-left cursor-pointer"
+                >
+                  <FontAwesomeIcon icon={["fab", "whatsapp"]} />
+                  WhatsApp
+                </button>
+
+                <button
+                  onClick={() =>
+                    window.open(
+                      `https://twitter.com/intent/tweet?text=${shareText}`,
+                      "_blank"
+                    )
+                  }
+                  className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full text-left cursor-pointer"
+                >
+                  <FontAwesomeIcon icon={["fab", "twitter"]} />
+                  Twitter
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </motion.div>

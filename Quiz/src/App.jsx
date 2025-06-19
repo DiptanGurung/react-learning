@@ -4,6 +4,7 @@ import Welcome from "./pages/Welcome";
 import Home from "./pages/Home";
 import Quiz from "./pages/Quiz";
 import Result from "./pages/Result";
+import Rankings from "./pages/Rankings";
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -32,6 +33,7 @@ export default function App() {
       <Route path="/home" element={<Home />} />
       <Route path="/quiz" element={<Quiz />} />
       <Route path="/result" element={<Result />} />
+      <Route path="/rankings" element={<Rankings />} />
     </Routes>
   );
 }
