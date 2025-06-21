@@ -7,27 +7,33 @@ import { faWhatsapp, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import confetti from "canvas-confetti";
 
-// Add Font Awesome icons to the library
 library.add(faWhatsapp, faTwitter);
 
 export default function Result() {
-  const { score, questions, resetQuiz, musicOn, setMusicOn } = useQuiz();
+  const { score, questions, resetQuiz, musicOn, setMusicOn, category } = useQuiz();
   const navigate = useNavigate();
   const [highScore, setHighScore] = useState(0);
   const [shareOpen, setShareOpen] = useState(false);
   const shareRef = useRef(null);
 
-  // Save/load high score on mount and score changes
   useEffect(() => {
-    const stored = Number(localStorage.getItem("highScore")) || 0;
-    if (score > stored) {
+    const storedHigh = Number(localStorage.getItem("highScore")) || 0;
+    if (score > storedHigh) {
       localStorage.setItem("highScore", score);
       setHighScore(score);
     } else {
-      setHighScore(stored);
+      setHighScore(storedHigh);
     }
 
-    // Confetti on perfect score
+    const history = JSON.parse(localStorage.getItem("quizHistory")) || [];
+    history.push({
+      score,
+      total: questions.length,
+      category,
+      date: new Date().toLocaleString()
+    });
+    localStorage.setItem("quizHistory", JSON.stringify(history));
+
     if (score === questions.length && questions.length > 0) {
       confetti({
         particleCount: 200,
@@ -37,9 +43,8 @@ export default function Result() {
         colors: ["#facc15", "#4ade80", "#60a5fa"],
       });
     }
-  }, [score, questions.length]);
+  }, [score, questions.length, category]);
 
-  // Close share popup if clicked outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (shareRef.current && !shareRef.current.contains(event.target)) {
@@ -50,7 +55,6 @@ export default function Result() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Determine background music based on score
   const getMusicSrc = () => {
     if (score === questions.length) return "/sounds/pixel-paradise.mp3";
     if (score >= questions.length * 0.8) return "/sounds/pixel.mp3";
@@ -58,7 +62,6 @@ export default function Result() {
     return "/sounds/bad-dreams.mp3";
   };
 
-  // Handle music volume fade in/out
   useEffect(() => {
     const audio = document.getElementById("bg-music");
     if (!audio) return;
@@ -126,7 +129,6 @@ export default function Result() {
     `I scored ${score} out of ${questions.length} on this awesome quiz!`
   );
 
-  // Animation variants for share popup
   const popupVariants = {
     hidden: { opacity: 0, y: -10 },
     visible: { opacity: 1, y: 0 },
@@ -140,7 +142,6 @@ export default function Result() {
       transition={{ duration: 0.4 }}
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-600 via-blue-500 to-indigo-600 text-white text-center px-4 py-10 relative"
     >
-      {/* Music Toggle */}
       <button
         onClick={() => setMusicOn(!musicOn)}
         className="absolute top-4 right-4 p-2 bg-white text-black rounded-full shadow"
@@ -155,7 +156,6 @@ export default function Result() {
         </audio>
       )}
 
-      {/* Score Card */}
       <div className="bg-white/10 p-8 rounded-2xl backdrop-blur-lg shadow-xl max-w-xl w-full">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 flex items-center justify-center gap-3">
           🏆 {emoji} Score: {score}/{questions.length}
@@ -177,7 +177,6 @@ export default function Result() {
           🔥 Streak: {score >= 3 ? `${score} correct in a row!` : "No streak"}
         </p>
 
-        {/* Action Buttons */}
         <div
           className="mt-6 flex flex-col md:flex-row items-center justify-center gap-4 relative"
           ref={shareRef}
