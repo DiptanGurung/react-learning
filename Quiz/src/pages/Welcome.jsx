@@ -140,7 +140,7 @@ export default function Welcome() {
             <path d="M12 12a3 3 0 0 0-3 3h6a3 3 0 0 0-3-3z" />
             <path d="M12 6a4 4 0 0 0-4 4v1h8v-1a4 4 0 0 0-4-4z" />
           </svg>
-          <span className="mt-1 text-sm">Different Category</span>
+          <span className="mt-1 text-sm">Categories</span>
         </div>
 
         {/* Timer icon */}

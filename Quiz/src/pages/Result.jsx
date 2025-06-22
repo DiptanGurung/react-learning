@@ -4,11 +4,31 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp, faTwitter } from "@fortawesome/free-brands-svg-icons";
+import {
+  faTrophy,
+  faVolumeUp,
+  faVolumeMute,
+  faMedal,
+  faShareAlt,
+  faRedo,
+  faCheckCircle,
+  faChampagneGlasses,
+} from "@fortawesome/free-solid-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import confetti from "canvas-confetti";
 
-// Add Font Awesome icons
-library.add(faWhatsapp, faTwitter);
+library.add(
+  faWhatsapp,
+  faTwitter,
+  faTrophy,
+  faVolumeUp,
+  faVolumeMute,
+  faMedal,
+  faShareAlt,
+  faRedo,
+  faCheckCircle,
+  faChampagneGlasses
+);
 
 export default function Result() {
   const { score, questions, resetQuiz, musicOn, setMusicOn, category } = useQuiz();
@@ -67,7 +87,7 @@ export default function Result() {
     let fadeIn, fadeOut;
     if (musicOn) {
       audio.volume = 0;
-      audio.play().catch(() => {});
+      audio.play().catch(() => { });
       fadeIn = setInterval(() => {
         if (audio.volume < 1) {
           audio.volume = Math.min(audio.volume + 0.1, 1);
@@ -97,7 +117,6 @@ export default function Result() {
 
     const history = JSON.parse(localStorage.getItem("quizHistory")) || [];
 
-    // Check if this exact score for this player & category already exists
     const alreadyExists = history.some(
       (entry) =>
         entry.name === playerName &&
@@ -110,7 +129,6 @@ export default function Result() {
       return;
     }
 
-    // Add new entry with full details
     history.push({
       name: playerName,
       score,
@@ -140,7 +158,7 @@ export default function Result() {
         onClick={() => setMusicOn(!musicOn)}
         className="absolute top-4 right-4 p-2 bg-white text-black rounded-full shadow"
       >
-        {musicOn ? "🔊" : "🔇"}
+        <FontAwesomeIcon icon={musicOn ? faVolumeUp : faVolumeMute} />
       </button>
 
       {musicOn && (
@@ -150,11 +168,13 @@ export default function Result() {
       )}
 
       <div className="bg-white/10 p-8 rounded-2xl backdrop-blur-lg shadow-xl max-w-xl w-full">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-          🏆 Score: {score}/{questions.length}
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 flex items-center justify-center gap-3">
+          <FontAwesomeIcon icon={faTrophy} /> Score: {score}/{questions.length}
         </h1>
 
-        <p className="text-lg mt-2">🥇 High Score: {highScore}</p>
+        <p className="text-lg mt-2 flex items-center justify-center gap-2">
+          <FontAwesomeIcon icon={faMedal} /> High Score: {highScore}
+        </p>
 
         <div className="mt-6">
           {!scoreSaved ? (
@@ -170,11 +190,13 @@ export default function Result() {
                 onClick={handleSaveScore}
                 className="w-full bg-yellow-400 text-black font-bold py-3 rounded-xl hover:bg-yellow-300 transition"
               >
-                Save Score
+                <FontAwesomeIcon icon={faCheckCircle} className="mr-2" /> Save Score
               </button>
             </>
           ) : (
-            <p className="text-green-400 font-bold text-lg mb-4">✅ Score saved!</p>
+            <p className="text-green-400 font-bold text-lg mb-4 flex items-center justify-center gap-2">
+              <FontAwesomeIcon icon={faCheckCircle} /> Score saved!
+            </p>
           )}
         </div>
 
@@ -186,14 +208,14 @@ export default function Result() {
             onClick={handleRestart}
             className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-xl shadow hover:scale-105 transition"
           >
-            🔄 Try Again
+            <FontAwesomeIcon icon={faRedo} className="mr-2" /> Try Again
           </button>
 
           <button
             onClick={() => setShareOpen(!shareOpen)}
             className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow hover:scale-105 transition"
           >
-            🔗 Share {shareOpen ? "▲" : "▼"}
+            <FontAwesomeIcon icon={faShareAlt} className="mr-2" /> Share {shareOpen ? "▲" : "▼"}
           </button>
 
           <AnimatePresence>
@@ -211,8 +233,7 @@ export default function Result() {
                   }
                   className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full text-left"
                 >
-                  <FontAwesomeIcon icon={["fab", "whatsapp"]} />
-                  WhatsApp
+                  <FontAwesomeIcon icon={faWhatsapp} /> WhatsApp
                 </button>
                 <button
                   onClick={() =>
@@ -223,8 +244,7 @@ export default function Result() {
                   }
                   className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full text-left"
                 >
-                  <FontAwesomeIcon icon={["fab", "twitter"]} />
-                  Twitter
+                  <FontAwesomeIcon icon={faTwitter} /> Twitter
                 </button>
               </motion.div>
             )}

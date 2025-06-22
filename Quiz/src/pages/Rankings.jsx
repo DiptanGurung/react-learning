@@ -18,7 +18,6 @@ export default function Rankings() {
   const [rankings, setRankings] = useState([]);
   const [filter, setFilter] = useState("all");
 
-  // Music fade in/out
   useEffect(() => {
     const audio = document.getElementById("bg-music");
     if (!audio) return;
@@ -26,7 +25,7 @@ export default function Rankings() {
     let fadeInterval;
     if (musicOn) {
       audio.volume = 0;
-      audio.play().catch(() => {});
+      audio.play().catch(() => { });
       fadeInterval = setInterval(() => {
         if (audio.volume < 1) {
           audio.volume = Math.min(audio.volume + 0.1, 1);
@@ -51,7 +50,6 @@ export default function Rankings() {
   // Load rankings from localStorage quizHistory key
   useEffect(() => {
     const storedHistory = JSON.parse(localStorage.getItem("quizHistory") || "[]");
-    // Sort descending by score
     const sorted = [...storedHistory].sort((a, b) => b.score - a.score);
     setRankings(sorted);
   }, []);
@@ -92,12 +90,14 @@ export default function Rankings() {
       </button>
 
       {/* Title */}
-      <h1 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-wide">
-        🏆 Top Rankings
+      <h1 className="text-4xl md:text-5xl font-extrabold mb-6 tracking-wide flex items-center gap-3">
+        <FontAwesomeIcon icon={faTrophy} className="text-yellow-400 w-8 h-8" />
+        Top Rankings
       </h1>
 
+
       {/* Clear and Filter Controls */}
-      <div className="flex flex-wrap gap-4 mb-6">
+      <div className="flex flex-wrap gap-4 mb-3">
         <button
           onClick={handleClear}
           className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-full text-white font-semibold shadow flex items-center gap-2"
@@ -108,7 +108,7 @@ export default function Rankings() {
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="pl-4 pr-4 py-2 rounded-full bg-white/20 backdrop-blur text-white appearance-none focus:outline-none"
+          className="pl-4 pr-4 py-2 rounded-full bg-white backdrop-blur text-black appearance-none focus:outline-none"
           aria-label="Filter by category"
         >
           <option value="all">All Categories</option>
@@ -121,44 +121,34 @@ export default function Rankings() {
       </div>
 
       {/* Rankings List */}
-      <div className="w-full max-w-3xl bg-white bg-opacity-10 rounded-3xl p-6 shadow-lg backdrop-blur-md">
-        {filteredRankings.length === 0 ? (
-          <p className="text-center text-lg text-yellow-300">
-            No rankings available yet.
-          </p>
-        ) : (
-          <ul className="divide-y divide-white/30">
-            {filteredRankings.map((entry, idx) => (
-              <li
-                key={idx}
-                className="flex justify-between items-center py-4 px-3 hover:bg-white/20 rounded-lg transition"
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-2xl font-bold w-8 text-yellow-400">
-                    {idx + 1}
-                  </span>
-                  <FontAwesomeIcon
-                    icon={faTrophy}
-                    className="text-yellow-400 w-6 h-6"
-                  />
-                  <span className="text-lg font-semibold capitalize">
-                    {entry.name || "Unknown"}
-                  </span>
-                  <span className="text-sm text-white/70 italic">
-                    ({entry.category || "General"})
-                  </span>
-                </div>
-                <div className="flex flex-col items-end">
-                  <span className="text-xl font-bold">
-                    {entry.score} / {entry.total}
-                  </span>
-                  <span className="text-sm text-white/70">{entry.date}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {filteredRankings.length === 0 ? (
+        <p className="text-center text-lg text-yellow-300">
+          No rankings available yet.
+        </p>
+      ) : (
+        <ul className="w-full max-w-3xl space-y-3">
+          {filteredRankings.map((entry, idx) => (
+            <li
+              key={idx}
+              className="flex justify-between items-center py-2 px-4 bg-white/10 rounded-xl hover:bg-white/20 transition text-xs leading-tight shadow"
+            >
+              <div className="flex items-center gap-3">
+                <span className="w-6 font-bold text-yellow-400">{idx + 1}</span>
+                {/* <FontAwesomeIcon icon={faTrophy} className="text-yellow-400 w-4 h-4" /> */}
+                <span className="truncate max-w-[100px] text-white/90 text-sm">{entry.name || "Unknown"}</span>
+                <span className="text-sm text-white/70 italic">
+                  ({entry.category || "General"})
+                </span>
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-white/70 text-sm">{entry.score} / {entry.total}</span>
+                <span className="text-2sm text-white/70">{entry.date}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
 
       {/* Background Music */}
       {musicOn && (
