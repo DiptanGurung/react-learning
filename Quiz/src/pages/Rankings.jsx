@@ -133,9 +133,8 @@ export default function Rankings() {
               className="flex justify-between items-center py-2 px-4 bg-white/10 rounded-xl hover:bg-white/20 transition text-xs leading-tight shadow"
             >
               <div className="flex items-center gap-3">
-                <span className="w-6 font-bold text-yellow-400">{idx + 1}</span>
-                {/* <FontAwesomeIcon icon={faTrophy} className="text-yellow-400 w-4 h-4" /> */}
-                <span className="truncate max-w-[100px] text-white/90 text-sm">{entry.name || "Unknown"}</span>
+                <span className="w-6 font-bold text-yellow-500 ml-2">{idx + 1}</span>
+                <span className="truncate max-w-[100px] text-yellow-500 text-sm ml-5">{entry.name || "Unknown"}</span>
                 <span className="text-sm text-white/70 italic">
                   ({entry.category || "General"})
                 </span>
