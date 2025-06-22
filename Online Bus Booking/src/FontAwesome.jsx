@@ -1,0 +1,32 @@
+import { library } from '@fortawesome/fontawesome-svg-core';
+import {
+  faBusAlt,
+  faUser,
+  faBars,
+  faSignInAlt,
+  faCalendarAlt,
+  faTicketAlt,
+  faSearch,
+  faHome,
+  faUserShield,
+  faClipboardList,
+  faTools,
+  faPen,
+  faClock,
+} from '@fortawesome/free-solid-svg-icons';
+
+library.add(
+  faBusAlt,
+  faUser,
+  faBars,
+  faSignInAlt,
+  faCalendarAlt,
+  faTicketAlt,
+  faSearch,
+  faHome,
+  faUserShield,
+  faClipboardList,
+  faTools,
+  faPen,
+  faClock
+);
