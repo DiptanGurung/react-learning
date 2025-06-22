@@ -7,6 +7,7 @@ import { faWhatsapp, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import confetti from "canvas-confetti";
 
+// Add Font Awesome icons
 library.add(faWhatsapp, faTwitter);
 
 export default function Result() {
@@ -14,25 +15,29 @@ export default function Result() {
   const navigate = useNavigate();
   const [highScore, setHighScore] = useState(0);
   const [shareOpen, setShareOpen] = useState(false);
+  const [playerName, setPlayerName] = useState("");
+  const [scoreSaved, setScoreSaved] = useState(false);
   const shareRef = useRef(null);
 
+  const shareText = encodeURIComponent(
+    `I scored ${score} out of ${questions.length} on this awesome quiz!`
+  );
+
+  const getMusicSrc = () => {
+    if (score === questions.length) return "/sounds/pixel-paradise.mp3";
+    if (score >= questions.length * 0.8) return "/sounds/pixel.mp3";
+    if (score >= questions.length * 0.5) return "/sounds/8-bit.mp3";
+    return "/sounds/bad-dreams.mp3";
+  };
+
   useEffect(() => {
-    const storedHigh = Number(localStorage.getItem("highScore")) || 0;
-    if (score > storedHigh) {
+    const stored = Number(localStorage.getItem("highScore")) || 0;
+    if (score > stored) {
       localStorage.setItem("highScore", score);
       setHighScore(score);
     } else {
-      setHighScore(storedHigh);
+      setHighScore(stored);
     }
-
-    const history = JSON.parse(localStorage.getItem("quizHistory")) || [];
-    history.push({
-      score,
-      total: questions.length,
-      category,
-      date: new Date().toLocaleString()
-    });
-    localStorage.setItem("quizHistory", JSON.stringify(history));
 
     if (score === questions.length && questions.length > 0) {
       confetti({
@@ -43,7 +48,7 @@ export default function Result() {
         colors: ["#facc15", "#4ade80", "#60a5fa"],
       });
     }
-  }, [score, questions.length, category]);
+  }, [score, questions.length]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -55,19 +60,11 @@ export default function Result() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const getMusicSrc = () => {
-    if (score === questions.length) return "/sounds/pixel-paradise.mp3";
-    if (score >= questions.length * 0.8) return "/sounds/pixel.mp3";
-    if (score >= questions.length * 0.5) return "/sounds/8-bit.mp3";
-    return "/sounds/bad-dreams.mp3";
-  };
-
   useEffect(() => {
     const audio = document.getElementById("bg-music");
     if (!audio) return;
 
     let fadeIn, fadeOut;
-
     if (musicOn) {
       audio.volume = 0;
       audio.play().catch(() => {});
@@ -95,43 +92,40 @@ export default function Result() {
     };
   }, [musicOn, score]);
 
+  const handleSaveScore = () => {
+    if (!playerName.trim()) return alert("Please enter your name first!");
+
+    const history = JSON.parse(localStorage.getItem("quizHistory")) || [];
+
+    // Check if this exact score for this player & category already exists
+    const alreadyExists = history.some(
+      (entry) =>
+        entry.name === playerName &&
+        entry.score === score &&
+        entry.category === category
+    );
+
+    if (alreadyExists) {
+      alert("This score is already saved.");
+      return;
+    }
+
+    // Add new entry with full details
+    history.push({
+      name: playerName,
+      score,
+      total: questions.length,
+      category,
+      date: new Date().toLocaleString(),
+    });
+
+    localStorage.setItem("quizHistory", JSON.stringify(history));
+    setScoreSaved(true);
+  };
+
   const handleRestart = () => {
     resetQuiz();
     navigate("/home");
-  };
-
-  const emoji = (
-    <motion.div
-      initial={{ scale: 0.8 }}
-      animate={{ scale: [1, 1.2, 1] }}
-      transition={{ repeat: Infinity, duration: 1.5 }}
-    >
-      {score === questions.length
-        ? "🎉"
-        : score > questions.length / 5
-        ? "😊"
-        : "😐"}
-    </motion.div>
-  );
-
-  let message;
-  if (score === questions.length) {
-    message = <>Perfect! You're a quiz master! 🎯</>;
-  } else if (score > questions.length / 4) {
-    message = <>Great job! Keep it up! 🚀</>;
-  } else if (score > 3) {
-    message = <>Not bad, try again and improve! 🔄</>;
-  } else {
-    message = <>You don't have brains to work! 🧠</>;
-  }
-
-  const shareText = encodeURIComponent(
-    `I scored ${score} out of ${questions.length} on this awesome quiz!`
-  );
-
-  const popupVariants = {
-    hidden: { opacity: 0, y: -10 },
-    visible: { opacity: 1, y: 0 },
   };
 
   return (
@@ -145,7 +139,6 @@ export default function Result() {
       <button
         onClick={() => setMusicOn(!musicOn)}
         className="absolute top-4 right-4 p-2 bg-white text-black rounded-full shadow"
-        aria-label={musicOn ? "Mute background music" : "Play background music"}
       >
         {musicOn ? "🔊" : "🔇"}
       </button>
@@ -157,25 +150,33 @@ export default function Result() {
       )}
 
       <div className="bg-white/10 p-8 rounded-2xl backdrop-blur-lg shadow-xl max-w-xl w-full">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 flex items-center justify-center gap-3">
-          🏆 {emoji} Score: {score}/{questions.length}
+        <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          🏆 Score: {score}/{questions.length}
         </h1>
 
-        <p className="text-xl mt-4">{message}</p>
+        <p className="text-lg mt-2">🥇 High Score: {highScore}</p>
 
-        <p className="text-md mt-6">🥇 High Score: {highScore}</p>
-
-        <div className="w-full mt-6 bg-white/30 h-4 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-yellow-300 transition-all duration-500 ease-out"
-            style={{ width: `${(score / questions.length) * 100}%` }}
-          />
+        <div className="mt-6">
+          {!scoreSaved ? (
+            <>
+              <input
+                type="text"
+                placeholder="Enter your name"
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+                className="w-full p-3 rounded-lg text-black text-lg mb-4"
+              />
+              <button
+                onClick={handleSaveScore}
+                className="w-full bg-yellow-400 text-black font-bold py-3 rounded-xl hover:bg-yellow-300 transition"
+              >
+                Save Score
+              </button>
+            </>
+          ) : (
+            <p className="text-green-400 font-bold text-lg mb-4">✅ Score saved!</p>
+          )}
         </div>
-
-        <p className="text-sm mt-1">XP: {score * 10} XP</p>
-        <p className="text-sm mt-1">
-          🔥 Streak: {score >= 3 ? `${score} correct in a row!` : "No streak"}
-        </p>
 
         <div
           className="mt-6 flex flex-col md:flex-row items-center justify-center gap-4 relative"
@@ -183,16 +184,14 @@ export default function Result() {
         >
           <button
             onClick={handleRestart}
-            className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-xl shadow hover:scale-105 transition flex items-center gap-2"
+            className="px-6 py-3 bg-white text-blue-600 font-semibold rounded-xl shadow hover:scale-105 transition"
           >
             🔄 Try Again
           </button>
 
           <button
             onClick={() => setShareOpen(!shareOpen)}
-            aria-haspopup="true"
-            aria-expanded={shareOpen}
-            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow hover:scale-105 transition flex items-center gap-2 relative"
+            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow hover:scale-105 transition"
           >
             🔗 Share {shareOpen ? "▲" : "▼"}
           </button>
@@ -201,23 +200,20 @@ export default function Result() {
             {shareOpen && (
               <motion.div
                 key="share-popup"
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                variants={popupVariants}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
                 className="absolute top-full mt-2 right-0 bg-white rounded-lg shadow-lg text-black py-2 w-48 z-50"
               >
                 <button
                   onClick={() =>
                     window.open(`https://wa.me/?text=${shareText}`, "_blank")
                   }
-                  className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full text-left cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full text-left"
                 >
                   <FontAwesomeIcon icon={["fab", "whatsapp"]} />
                   WhatsApp
                 </button>
-
                 <button
                   onClick={() =>
                     window.open(
@@ -225,7 +221,7 @@ export default function Result() {
                       "_blank"
                     )
                   }
-                  className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full text-left cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 w-full text-left"
                 >
                   <FontAwesomeIcon icon={["fab", "twitter"]} />
                   Twitter
