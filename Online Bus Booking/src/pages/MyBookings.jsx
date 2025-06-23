@@ -23,7 +23,7 @@ const MyBookings = () => {
             <p><strong>Route:</strong> {b.route}</p>
             <p><strong>Date:</strong> {b.date}</p>
             <p><strong>Time:</strong> {b.time}</p>
-            <p><strong>Seats:</strong> {b.seats}</p>
+            <p><strong>Seats:</strong> {b.selectedSeats?.join(', ')}</p>
             <p><strong>Total:</strong> NPR {b.seats * b.price}</p>
           </div>
         ))

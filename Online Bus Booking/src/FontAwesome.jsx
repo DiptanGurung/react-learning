@@ -13,6 +13,8 @@ import {
   faTools,
   faPen,
   faClock,
+  faCheckCircle,
+  faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -28,5 +30,7 @@ library.add(
   faClipboardList,
   faTools,
   faPen,
-  faClock
+  faClock,
+  faCheckCircle,
+  faPlus,
 );

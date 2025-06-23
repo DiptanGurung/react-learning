@@ -1,33 +1,44 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useBusContext } from '../context/BusContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isLoggedIn, logoutUser, currentUser } = useBusContext();
 
   return (
     <nav className="bg-blue-700 text-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           <div className="flex items-center">
-            <i className="fas fa-bus-alt text-2xl mr-2"></i>
-            <Link to="/" className="text-xl font-bold">
-              Book_your_Bus
-            </Link>
+            <FontAwesomeIcon icon="bus-alt" className="text-2xl mr-2" />
+            <Link to="/" className="text-xl font-bold">Book_your_Bus</Link>
           </div>
 
-          <div className="hidden md:flex space-x-6">
+          <div className="hidden md:flex space-x-6 items-center">
             <Link to="/" className="hover:text-yellow-300">Home</Link>
             <Link to="/buses" className="hover:text-yellow-300">Search Buses</Link>
             <Link to="/bookings" className="hover:text-yellow-300">My Bookings</Link>
             <Link to="/admin" className="hover:text-yellow-300">Admin</Link>
-            <Link to="/login" className="hover:text-yellow-300">
-              <i className="fas fa-user mr-1"></i> Login
-            </Link>
+
+            {!isLoggedIn ? (
+              <Link to="/login" className="hover:text-yellow-300">
+                <FontAwesomeIcon icon="user" className="mr-1" /> Login
+              </Link>
+            ) : (
+              <>
+                <span className="mr-3">Welcome, {currentUser?.name || 'User'}</span>
+                <button onClick={logoutUser} className="hover:text-yellow-300 flex items-center">
+                  <FontAwesomeIcon icon="sign-in-alt" className="mr-1" /> Logout
+                </button>
+              </>
+            )}
           </div>
 
           <div className="md:hidden">
             <button onClick={() => setIsOpen(!isOpen)}>
-              <i className="fas fa-bars text-xl"></i>
+              <FontAwesomeIcon icon="bars" className="text-xl" />
             </button>
           </div>
         </div>
@@ -39,9 +50,19 @@ const Navbar = () => {
           <Link to="/buses" className="block hover:text-yellow-300">Search Buses</Link>
           <Link to="/bookings" className="block hover:text-yellow-300">My Bookings</Link>
           <Link to="/admin" className="block hover:text-yellow-300">Admin</Link>
-          <Link to="/login" className="block hover:text-yellow-300">
-            <i className="fas fa-user mr-1"></i> Login
-          </Link>
+
+          {!isLoggedIn ? (
+            <Link to="/login" className="block hover:text-yellow-300">
+              <FontAwesomeIcon icon="user" className="mr-1" /> Login
+            </Link>
+          ) : (
+            <>
+              <span className="block mb-2">Welcome, {currentUser?.name || 'User'}</span>
+              <button onClick={logoutUser} className="block hover:text-yellow-300 flex items-center">
+                <FontAwesomeIcon icon="sign-in-alt" className="mr-1" /> Logout
+              </button>
+            </>
+          )}
         </div>
       )}
     </nav>

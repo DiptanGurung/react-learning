@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useBusContext } from '../context/BusContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const BookingPage = () => {
   const { id } = useParams();
@@ -9,31 +10,51 @@ const BookingPage = () => {
 
   const bus = buses.find((b) => b.id === parseInt(id));
   const [name, setName] = useState('');
-  const [seats, setSeats] = useState(1);
+  const [selectedSeats, setSelectedSeats] = useState([]);
+
+  if (!bus) return <div className="p-6">Bus not found</div>;
+
+  const reserved = bus.reservedSeats || [];
+
+  const handleSeatClick = (seatNumber) => {
+    if (reserved.includes(seatNumber)) return;
+    if (selectedSeats.includes(seatNumber)) {
+      setSelectedSeats(selectedSeats.filter((s) => s !== seatNumber));
+    } else {
+      setSelectedSeats([...selectedSeats, seatNumber]);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    addBooking({
+    if (!selectedSeats.length) {
+      alert('Please select at least one seat.');
+      return;
+    }
+
+    const booking = {
       id: Date.now(),
       name,
       route: `${bus.from} → ${bus.to}`,
       date: bus.date,
       time: bus.time,
-      seats,
+      seats: selectedSeats.length,
+      selectedSeats,
       price: bus.price,
-    });
-    navigate('/bookings');
+    };
+
+    addBooking(booking);
+    navigate('/summary', { state: booking });
   };
 
-  if (!bus) return <div className="p-6">Bus not found</div>;
-
   return (
-    <div className="min-h-screen bg-white p-6 max-w-lg mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-blue-700">
-        <FontAwesomeIcon icon="pen" className="mr-2" />
-        Book {bus.name}
+    <div className="min-h-screen bg-white p-6 max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold text-blue-700 mb-4">
+        <FontAwesomeIcon icon="ticket-alt" className="mr-2" />
+        Book Seats on {bus.name}
       </h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+
+      <form onSubmit={handleSubmit} className="space-y-6">
         <input
           type="text"
           placeholder="Full Name"
@@ -42,20 +63,49 @@ const BookingPage = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <input
-          type="number"
-          placeholder="Number of Seats"
-          min={1}
-          required
-          className="w-full p-2 border rounded"
-          value={seats}
-          onChange={(e) => setSeats(Number(e.target.value))}
-        />
+
+        <div>
+          <h3 className="font-semibold mb-2">Select Your Seats:</h3>
+
+          <div className="flex space-x-4 text-sm mb-3">
+            <span className="bg-green-200 px-2 py-1 rounded">Available</span>
+            <span className="bg-red-500 text-white px-2 py-1 rounded">Selected</span>
+            <span className="bg-gray-400 text-white px-2 py-1 rounded">Reserved</span>
+          </div>
+
+          <div className="grid grid-cols-4 gap-3">
+            {[...Array(40)].map((_, index) => {
+              const seatNumber = index + 1;
+              const isSelected = selectedSeats.includes(seatNumber);
+              const isReserved = reserved.includes(seatNumber);
+
+              return (
+                <button
+                  type="button"
+                  key={seatNumber}
+                  onClick={() => handleSeatClick(seatNumber)}
+                  disabled={isReserved}
+                  className={`w-full py-2 rounded text-sm font-bold transition ${
+                    isReserved
+                      ? 'bg-gray-400 text-white cursor-not-allowed'
+                      : isSelected
+                      ? 'bg-red-500 text-white'
+                      : 'bg-green-200 hover:bg-green-300'
+                  }`}
+                >
+                  Seat {seatNumber}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
         >
-          Confirm Booking
+          Confirm Booking ({selectedSeats.length} seat
+          {selectedSeats.length !== 1 && 's'})
         </button>
       </form>
     </div>

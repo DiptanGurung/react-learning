@@ -7,18 +7,26 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
   const navigate = useNavigate();
-  const { login } = useBusContext();
+
+  const { loginUser } = useBusContext();
 
   const handleLogin = (e) => {
     e.preventDefault();
     if (email && pass) {
-      login();
+      const user = {
+        id: Date.now(),
+        name: email.split('@')[0], // simple username
+        email,
+      };
+
+      loginUser(user);
       alert('Login Successful');
       navigate('/');
     } else {
       alert('Please fill in all fields');
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
