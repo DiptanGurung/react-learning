@@ -32,6 +32,7 @@ const AddBus = () => {
       <h2 className="text-2xl font-bold text-blue-700 mb-4">
         <FontAwesomeIcon icon="bus-alt" className="mr-2" />
         Add New Bus
+        
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">

@@ -21,6 +21,12 @@ const HomePage = () => {
     },
   ];
 
+  const placesInNepal = [
+    'Kathmandu', 'Pokhara', 'Chitwan', 'Biratnagar', 'Butwal',
+    'Dharan', 'Bhaktapur', 'Lalitpur', 'Janakpur', 'Hetauda',
+    'Nepalgunj', 'Birgunj', 'Dhangadhi', 'Itahari', 'Tansen',
+  ];
+
   const settings = {
     dots: true,
     infinite: true,
@@ -34,14 +40,14 @@ const HomePage = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    navigate('/buses'); 
+    navigate('/buses');
   };
 
   return (
     <div className="min-h-screen">
       <div className="relative h-[75vh] bg-cover bg-center text-white flex items-center justify-center px-6"
         style={{
-          backgroundImage: "url('/images/bus.jpg')", 
+          backgroundImage: "url('/images/bus.jpg')",
         }}
       >
         <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -52,20 +58,30 @@ const HomePage = () => {
 
           <form
             onSubmit={handleSearch}
-            className="bg-white bg-opacity-90 p-4 rounded-lg flex flex-col md:flex-row gap-4 items-center justify-center"
+            className="bg-white text-black bg-opacity-90 p-4 rounded-lg flex flex-col md:flex-row gap-4 items-center justify-center"
           >
-            <input
-              type="text"
-              placeholder="From"
+            <select
               className="p-2 rounded border w-full md:w-40"
               required
-            />
-            <input
-              type="text"
-              placeholder="To"
+              defaultValue=""
+            >
+              <option value="" disabled>From</option>
+              {placesInNepal.map((place) => (
+                <option key={place} value={place}>{place}</option>
+              ))}
+            </select>
+
+            <select
               className="p-2 rounded border w-full md:w-40"
               required
-            />
+              defaultValue=""
+            >
+              <option value="" disabled>To</option>
+              {placesInNepal.map((place) => (
+                <option key={place} value={place}>{place}</option>
+              ))}
+            </select>
+
             <input
               type="date"
               className="p-2 rounded border w-full md:w-40"
@@ -79,6 +95,7 @@ const HomePage = () => {
               Find Buses
             </button>
           </form>
+
         </div>
       </div>
 

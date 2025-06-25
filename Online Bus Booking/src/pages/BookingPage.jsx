@@ -38,6 +38,7 @@ const BookingPage = () => {
     if (!isLoggedIn || !currentUser) {
       alert('You must be logged in to make a booking.');
       return;
+
     }
 
     if (!selectedSeats.length) {
@@ -45,11 +46,22 @@ const BookingPage = () => {
       return;
     }
 
+    const buses = {
+      id: Date.now(),
+      name,
+      route: `${bus.from} → ${bus.to}`,
+      date: bus.date,
+      time: bus.time,
+      seats: selectedSeats.length,
+      selectedSeats,
+      price: bus.price,
+    };
+
     const booking = {
       id: Date.now(),
       name,
       route: `${bus.from} → ${bus.to}`,
-      date: bus.date, 
+      date: bus.date,
       time: bus.time,
       seats: selectedSeats.length,
       selectedSeats,
@@ -99,10 +111,10 @@ const BookingPage = () => {
                   onClick={() => handleSeatClick(seatNumber)}
                   disabled={isReserved}
                   className={`w-full py-2 rounded text-sm font-bold transition ${isReserved
-                      ? 'bg-gray-400 text-white cursor-not-allowed'
-                      : isSelected
-                        ? 'bg-red-500 text-white'
-                        : 'bg-green-200 hover:bg-green-300'
+                    ? 'bg-gray-400 text-white cursor-not-allowed'
+                    : isSelected
+                      ? 'bg-red-500 text-white'
+                      : 'bg-green-200 hover:bg-green-300'
                     }`}
                 >
                   Seat {seatNumber}

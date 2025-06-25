@@ -16,7 +16,8 @@ const AdminDashboard = () => {
     );
   }
 
-  const { bookings } = context;
+  const { buses } = context;
+  const { booking } = context;
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -36,19 +37,19 @@ const AdminDashboard = () => {
       <div className="bg-white rounded-xl p-4 shadow-md">
         <h3 className="text-xl font-semibold mb-4">
           <FontAwesomeIcon icon="clipboard-list" className="mr-2" />
-          All Bookings
+          All Buses
         </h3>
 
-        {bookings.length === 0 ? (
+        {buses.length === 0 ? (
           <p className="text-gray-500 italic">No bookings made yet.</p>
         ) : (
-          bookings.map((b) => (
-            <div key={b.id} className="border-b py-2">
+          buses.map((bus) => (
+            <div key={bus.id} className="border-b py-2">
               <p>
-                <strong>{b.name}</strong> booked {b.seats} seat(s) on {b.route}
+                <strong>{bus.name}</strong> from {bus.from} to {bus.to}
               </p>
               <p className="text-sm text-gray-600">
-                {b.date} at {b.time} | Total: NPR {b.seats * b.price}
+                {bus.date} at {bus.time} | Total: NPR {bus.price}
               </p>
             </div>
           ))

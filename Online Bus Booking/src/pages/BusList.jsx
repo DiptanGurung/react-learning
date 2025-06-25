@@ -17,33 +17,44 @@ const BusList = () => {
         {buses.map((bus) => (
           <div
             key={bus.id}
-            className="bg-white rounded-xl shadow-md p-4 hover:shadow-lg transition"
+            className="bg-white rounded-xl shadow-md p-4 hover:shadow-lg transition flex flex-col"
           >
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
               <FontAwesomeIcon icon="bus-alt" className="mr-2 text-blue-600" />
               {bus.name}
             </h3>
+
             <p className="text-gray-600 mb-1">
               <FontAwesomeIcon icon="ticket-alt" className="mr-2 text-gray-500" />
               {bus.from} → {bus.to}
             </p>
+
             <p className="text-gray-600 mb-1">
               <FontAwesomeIcon icon="calendar-alt" className="mr-2 text-gray-500" />
-              {bus.date}
+              {new Date(bus.date).toLocaleDateString('en-NP')}
             </p>
+
             <p className="text-gray-600 mb-1">
               <FontAwesomeIcon icon="clock" className="mr-2 text-gray-500" />
               Departure: {bus.time}
             </p>
+
+            <p className="text-green-600 text-sm mt-1">
+              {40 - (bus.reservedSeats?.length || 0)} seats available
+            </p>
+
             <p className="text-blue-700 font-bold text-lg mt-2">
               NPR {bus.price}
             </p>
-            <Link
-              to={`/book/${bus.id}`}
-              className="block mt-4 w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg"
-            >
-              Book Now
-            </Link>
+
+            <div className="mt-auto">
+              <Link
+                to={`/book/${bus.id}`}
+                className="block mt-4 w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg"
+              >
+                Book Now
+              </Link>
+            </div>
           </div>
         ))}
       </div>
