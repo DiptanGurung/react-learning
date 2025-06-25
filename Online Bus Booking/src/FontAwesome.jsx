@@ -15,6 +15,7 @@ import {
   faClock,
   faCheckCircle,
   faPlus,
+  faUserPlus,
 } from '@fortawesome/free-solid-svg-icons';
 
 library.add(
@@ -33,4 +34,5 @@ library.add(
   faClock,
   faCheckCircle,
   faPlus,
+  faUserPlus,
 );

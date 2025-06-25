@@ -39,23 +39,16 @@ export const BusProvider = ({ children }) => {
   const [buses, setBuses] = useState(initialBuses);
   const [bookings, setBookings] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null); // { id, name, email } or null
+  const [currentUser, setCurrentUser] = useState(null); 
 
-  // Add booking with user association
   const addBooking = (newBooking) => {
-    if (!currentUser) {
-      alert('You must be logged in to make a booking.');
-      return;
-    }
-
     const bookingWithUser = {
       ...newBooking,
-      userId: currentUser.id,
+      userId: currentUser?.id || null,
     };
 
     setBookings((prev) => [...prev, bookingWithUser]);
 
-    // Update reserved seats of the bus
     setBuses((prevBuses) =>
       prevBuses.map((bus) =>
         bus.name === newBooking.name &&

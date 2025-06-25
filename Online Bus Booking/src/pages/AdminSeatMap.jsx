@@ -5,11 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const AdminSeatMap = () => {
   const { buses, bookings, setBookings, setBuses } = useBusContext();
 
-  // Cancel booking by seat on a bus
   const cancelSeat = (busId, seatNumber) => {
     if (!window.confirm(`Cancel booking for seat ${seatNumber}?`)) return;
 
-    // Remove booking(s) with this seat on this bus
     setBookings((prev) =>
       prev.filter(
         (b) =>
@@ -18,7 +16,6 @@ const AdminSeatMap = () => {
       )
     );
 
-    // Remove seat from reservedSeats
     setBuses((prev) =>
       prev.map((bus) =>
         bus.id === busId

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useBusContext } from '../context/BusContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -6,11 +6,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const BookingPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addBooking, buses } = useBusContext();
+  const { addBooking, buses, isLoggedIn, currentUser } = useBusContext();
 
   const bus = buses.find((b) => b.id === parseInt(id));
-  const [name, setName] = useState('');
+  const [name, setName] = useState(currentUser?.name || '');
   const [selectedSeats, setSelectedSeats] = useState([]);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    }
+  }, [isLoggedIn, navigate]);
+
 
   if (!bus) return <div className="p-6">Bus not found</div>;
 
@@ -18,15 +25,21 @@ const BookingPage = () => {
 
   const handleSeatClick = (seatNumber) => {
     if (reserved.includes(seatNumber)) return;
-    if (selectedSeats.includes(seatNumber)) {
-      setSelectedSeats(selectedSeats.filter((s) => s !== seatNumber));
-    } else {
-      setSelectedSeats([...selectedSeats, seatNumber]);
-    }
+    setSelectedSeats((prev) =>
+      prev.includes(seatNumber)
+        ? prev.filter((s) => s !== seatNumber)
+        : [...prev, seatNumber]
+    );
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!isLoggedIn || !currentUser) {
+      alert('You must be logged in to make a booking.');
+      return;
+    }
+
     if (!selectedSeats.length) {
       alert('Please select at least one seat.');
       return;
@@ -36,7 +49,7 @@ const BookingPage = () => {
       id: Date.now(),
       name,
       route: `${bus.from} → ${bus.to}`,
-      date: bus.date,
+      date: bus.date, 
       time: bus.time,
       seats: selectedSeats.length,
       selectedSeats,
@@ -85,13 +98,12 @@ const BookingPage = () => {
                   key={seatNumber}
                   onClick={() => handleSeatClick(seatNumber)}
                   disabled={isReserved}
-                  className={`w-full py-2 rounded text-sm font-bold transition ${
-                    isReserved
+                  className={`w-full py-2 rounded text-sm font-bold transition ${isReserved
                       ? 'bg-gray-400 text-white cursor-not-allowed'
                       : isSelected
-                      ? 'bg-red-500 text-white'
-                      : 'bg-green-200 hover:bg-green-300'
-                  }`}
+                        ? 'bg-red-500 text-white'
+                        : 'bg-green-200 hover:bg-green-300'
+                    }`}
                 >
                   Seat {seatNumber}
                 </button>

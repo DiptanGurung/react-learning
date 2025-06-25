@@ -34,15 +34,14 @@ const HomePage = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    navigate('/buses'); // This could pass query later
+    navigate('/buses'); 
   };
 
   return (
     <div className="min-h-screen">
-      {/* Hero section */}
       <div className="relative h-[75vh] bg-cover bg-center text-white flex items-center justify-center px-6"
         style={{
-          backgroundImage: "url('/images/bus.jpg')", // replace with your image path
+          backgroundImage: "url('/images/bus.jpg')", 
         }}
       >
         <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -83,7 +82,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Testimonials */}
       <div className="py-16 bg-gray-100 text-center">
         <h2 className="text-3xl font-bold text-blue-700 mb-6">What Travelers Say</h2>
         <div className="max-w-3xl mx-auto px-6">

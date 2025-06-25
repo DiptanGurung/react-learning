@@ -23,9 +23,14 @@ const Navbar = () => {
             <Link to="/admin" className="hover:text-yellow-300">Admin</Link>
 
             {!isLoggedIn ? (
-              <Link to="/login" className="hover:text-yellow-300">
-                <FontAwesomeIcon icon="user" className="mr-1" /> Login
-              </Link>
+              <>
+                <Link to="/login" className="hover:text-yellow-300">
+                  <FontAwesomeIcon icon="user" className="mr-1" /> Login
+                </Link>
+                <Link to="/signup" className="hover:text-yellow-300">
+                  <FontAwesomeIcon icon="user-plus" className="ml-3 mr-1" /> Signup
+                </Link>
+              </>
             ) : (
               <>
                 <span className="mr-3">Welcome, {currentUser?.name || 'User'}</span>
@@ -52,9 +57,14 @@ const Navbar = () => {
           <Link to="/admin" className="block hover:text-yellow-300">Admin</Link>
 
           {!isLoggedIn ? (
-            <Link to="/login" className="block hover:text-yellow-300">
-              <FontAwesomeIcon icon="user" className="mr-1" /> Login
-            </Link>
+            <>
+              <Link to="/login" className="block hover:text-yellow-300">
+                <FontAwesomeIcon icon="user" className="mr-1" /> Login
+              </Link>
+              <Link to="/signup" className="block hover:text-yellow-300">
+                <FontAwesomeIcon icon="user-plus" className="mr-1" /> Signup
+              </Link>
+            </>
           ) : (
             <>
               <span className="block mb-2">Welcome, {currentUser?.name || 'User'}</span>

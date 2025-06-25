@@ -6,7 +6,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import HomePage from './pages/HomePage';
 import BusList from './pages/BusList';
-import BookingPage from './pages/Bookingpage';
+import BookingPage from './pages/BookingPage';
 import LoginPage from './pages/LoginPage';
 import MyBookings from './pages/MyBookings';
 import PrivateRoute from './components/PrivateRoute';
@@ -15,6 +15,7 @@ import AddBus from './pages/AddBus';
 import BookingSummary from './pages/BookingSummary';
 import AdminSeatMap from './pages/AdminSeatMap';
 import ProfilePage from './pages/ProfilePage';
+import SignupPage from './pages/SignupPage';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/admin-seatmap" element={<AdminSeatMap />} />
         <Route path="/admin/add-bus" element={<PrivateRoute><AddBus /></PrivateRoute>}/>
         <Route path="/summary" element={<BookingSummary />} />
+        <Route path="/signup" element={<SignupPage />} />
         <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </Router>

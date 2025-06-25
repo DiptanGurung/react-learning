@@ -18,7 +18,7 @@ const BookingSummary = () => {
 
     const timer = setTimeout(() => setShowConfetti(false), 7000);
 
-    const audio = new Audio('/sounds/success.mp3');
+    const audio = new Audio('sounds/success.mp3');
     audio.play();
 
     return () => {
@@ -39,7 +39,6 @@ const BookingSummary = () => {
     );
   }
 
-  // QR code content (customize if you want)
   const qrData = JSON.stringify({
     name: booking.name,
     route: booking.route,
