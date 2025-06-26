@@ -14,10 +14,10 @@ const BookingPage = () => {
 
   useEffect(() => {
     if (!isLoggedIn) {
+      alert('Please login to book a bus.');
       navigate('/login');
     }
   }, [isLoggedIn, navigate]);
-
 
   if (!bus) return <div className="p-6">Bus not found</div>;
 
@@ -35,27 +35,10 @@ const BookingPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!isLoggedIn || !currentUser) {
-      alert('You must be logged in to make a booking.');
-      return;
-
-    }
-
     if (!selectedSeats.length) {
       alert('Please select at least one seat.');
       return;
     }
-
-    const buses = {
-      id: Date.now(),
-      name,
-      route: `${bus.from} → ${bus.to}`,
-      date: bus.date,
-      time: bus.time,
-      seats: selectedSeats.length,
-      selectedSeats,
-      price: bus.price,
-    };
 
     const booking = {
       id: Date.now(),
@@ -110,12 +93,13 @@ const BookingPage = () => {
                   key={seatNumber}
                   onClick={() => handleSeatClick(seatNumber)}
                   disabled={isReserved}
-                  className={`w-full py-2 rounded text-sm font-bold transition ${isReserved
-                    ? 'bg-gray-400 text-white cursor-not-allowed'
-                    : isSelected
+                  className={`w-full py-2 rounded text-sm font-bold transition ${
+                    isReserved
+                      ? 'bg-gray-400 text-white cursor-not-allowed'
+                      : isSelected
                       ? 'bg-red-500 text-white'
                       : 'bg-green-200 hover:bg-green-300'
-                    }`}
+                  }`}
                 >
                   Seat {seatNumber}
                 </button>

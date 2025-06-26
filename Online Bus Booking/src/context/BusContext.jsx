@@ -39,7 +39,7 @@ export const BusProvider = ({ children }) => {
   const [buses, setBuses] = useState(initialBuses);
   const [bookings, setBookings] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null); 
+  const [currentUser, setCurrentUser] = useState(null);
 
   const addBooking = (newBooking) => {
     const bookingWithUser = {
@@ -47,18 +47,33 @@ export const BusProvider = ({ children }) => {
       userId: currentUser?.id || null,
     };
 
+    const isDuplicate = bookings.some((b) =>
+      b.userId === bookingWithUser.userId &&
+      b.route === bookingWithUser.route &&
+      b.date === bookingWithUser.date &&
+      b.time === bookingWithUser.time &&
+      b.selectedSeats.some((seat) =>
+        bookingWithUser.selectedSeats.includes(seat)
+      )
+    );
+
+    if (isDuplicate) {
+      alert("You've already booked one or more of these seats.");
+      return;
+    }
+
     setBookings((prev) => [...prev, bookingWithUser]);
 
     setBuses((prevBuses) =>
       prevBuses.map((bus) =>
-        bus.name === newBooking.name &&
-        bus.from === newBooking.route.split(' → ')[0] &&
-        bus.to === newBooking.route.split(' → ')[1]
+        bus.name === bookingWithUser.name &&
+        bus.from === bookingWithUser.route.split(' → ')[0] &&
+        bus.to === bookingWithUser.route.split(' → ')[1]
           ? {
               ...bus,
               reservedSeats: [
                 ...(bus.reservedSeats || []),
-                ...newBooking.selectedSeats,
+                ...bookingWithUser.selectedSeats,
               ],
             }
           : bus
@@ -67,7 +82,10 @@ export const BusProvider = ({ children }) => {
   };
 
   const addBus = (newBus) => {
-    setBuses((prev) => [...prev, { id: Date.now(), reservedSeats: [], ...newBus }]);
+    setBuses((prev) => [
+      ...prev,
+      { id: Date.now(), reservedSeats: [], ...newBus },
+    ]);
   };
 
   const loginUser = (user) => {

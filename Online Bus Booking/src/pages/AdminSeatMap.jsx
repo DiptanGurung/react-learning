@@ -6,24 +6,36 @@ const AdminSeatMap = () => {
   const { buses, bookings, setBookings, setBuses } = useBusContext();
 
   const cancelSeat = (busId, seatNumber) => {
-    if (!window.confirm(`Cancel booking for seat ${seatNumber}?`)) return;
+    const bus = buses.find((bus) => bus.id === busId);
+    if (!bus || !window.confirm(`Cancel booking for seat ${seatNumber}?`)) return;
 
-    setBookings((prev) =>
-      prev.filter(
-        (b) =>
-          !(b.route.includes(buses.find((bus) => bus.id === busId)?.from) &&
-            b.selectedSeats.includes(seatNumber))
-      )
+    const fullRoute = `${bus.from} → ${bus.to}`;
+
+    setBookings((prevBookings) =>
+      prevBookings
+        .map((booking) =>
+          booking.route === fullRoute &&
+            booking.date === bus.date &&
+            booking.time === bus.time &&
+            booking.selectedSeats.includes(seatNumber)
+            ? {
+              ...booking,
+              selectedSeats: booking.selectedSeats.filter((s) => s !== seatNumber),
+              seats: booking.seats - 1,
+            }
+            : booking
+        )
+        .filter((b) => b.selectedSeats.length > 0)
     );
 
     setBuses((prev) =>
-      prev.map((bus) =>
-        bus.id === busId
+      prev.map((b) =>
+        b.id === busId
           ? {
-              ...bus,
-              reservedSeats: bus.reservedSeats.filter((s) => s !== seatNumber),
-            }
-          : bus
+            ...b,
+            reservedSeats: b.reservedSeats.filter((s) => s !== seatNumber),
+          }
+          : b
       )
     );
   };
@@ -41,7 +53,7 @@ const AdminSeatMap = () => {
           className="bg-white shadow rounded-lg mb-8 p-6 border border-gray-300"
         >
           <h3 className="text-xl font-semibold mb-3">
-            {bus.name} ({bus.from} → {bus.to})
+            {bus.name} ({bus.from} → {bus.to}) on {bus.date} at {bus.time}
           </h3>
           <div className="grid grid-cols-8 gap-2">
             {[...Array(40)].map((_, idx) => {
@@ -52,11 +64,11 @@ const AdminSeatMap = () => {
                   key={seatNum}
                   onClick={() => isReserved && cancelSeat(bus.id, seatNum)}
                   disabled={!isReserved}
-                  className={`py-2 rounded text-sm font-bold ${
-                    isReserved
-                      ? 'bg-red-600 text-white hover:bg-red-700 cursor-pointer'
-                      : 'bg-green-200 text-gray-700 cursor-default'
-                  }`}
+                  aria-disabled={!isReserved}
+                  className={`py-2 rounded text-sm font-bold ${isReserved
+                      ? 'bg-gray-600 text-white hover:bg-gray-700 cursor-pointer'
+                      : 'bg-green-200 text-gray-700 cursor-not-allowed'
+                    }`}
                   title={isReserved ? 'Click to cancel booking' : 'Available'}
                 >
                   {seatNum}

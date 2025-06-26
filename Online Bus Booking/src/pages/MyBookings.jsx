@@ -3,7 +3,45 @@ import { useBusContext } from '../context/BusContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const MyBookings = () => {
-  const { bookings } = useBusContext();
+  const {
+    bookings,
+    setBookings,
+    buses,
+    setBuses,
+    currentUser,
+    isLoggedIn,
+  } = useBusContext();
+
+  const userBookings = isLoggedIn
+    ? bookings.filter((b) => b.userId === currentUser?.id)
+    : [];
+
+  const handleDelete = (id) => {
+    const bookingToDelete = bookings.find((b) => b.id === id);
+    if (!bookingToDelete) return;
+
+    if (window.confirm('Are you sure you want to cancel this booking?')) {
+      const updatedBookings = bookings.filter((b) => b.id !== id);
+      setBookings(updatedBookings);
+
+      setBuses((prev) =>
+        prev.map((bus) =>
+          bus.name === bookingToDelete.name &&
+          bus.from === bookingToDelete.route.split(' → ')[0] &&
+          bus.to === bookingToDelete.route.split(' → ')[1]
+            ? {
+                ...bus,
+                reservedSeats: bus.reservedSeats.filter(
+                  (s) => !bookingToDelete.selectedSeats.includes(s)
+                ),
+              }
+            : bus
+        )
+      );
+
+      alert('Booking cancelled and seats released.');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white p-6 max-w-4xl mx-auto">
@@ -11,10 +49,10 @@ const MyBookings = () => {
         <FontAwesomeIcon icon="clipboard-list" className="mr-2" />
         My Bookings
       </h2>
-      {bookings.length === 0 ? (
+      {userBookings.length === 0 ? (
         <p>No bookings yet.</p>
       ) : (
-        bookings.map((b) => (
+        userBookings.map((b) => (
           <div
             key={b.id}
             className="border rounded p-4 mb-3 shadow-sm hover:shadow-md transition"
@@ -25,6 +63,12 @@ const MyBookings = () => {
             <p><strong>Time:</strong> {b.time}</p>
             <p><strong>Seats:</strong> {b.selectedSeats?.join(', ')}</p>
             <p><strong>Total:</strong> NPR {b.seats * b.price}</p>
+            <button
+              onClick={() => handleDelete(b.id)}
+              className="mt-2 bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700"
+            >
+              Cancel Booking
+            </button>
           </div>
         ))
       )}
